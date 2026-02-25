@@ -4,7 +4,16 @@ import { useSignIn } from '@clerk/clerk-expo'
 import type { EmailCodeFactor } from '@clerk/types'
 import { Link, useRouter } from 'expo-router'
 import * as React from 'react'
-import { Pressable, StyleSheet, TextInput, View } from 'react-native'
+import { 
+  Pressable, 
+  StyleSheet, 
+  TextInput, 
+  View, 
+  Text,
+  Image, 
+  KeyboardAvoidingView, 
+  Platform,
+ } from 'react-native'
 
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn()
