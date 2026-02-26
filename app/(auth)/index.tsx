@@ -38,7 +38,7 @@ export default function AuthLanding() {
           </Pressable>
         </Link>
 
-        <Pressable onPress={() => router.replace("/")} style={styles.guestWrap}>
+        <Pressable onPress={() => router.replace("/(tabs)")} style={styles.guestWrap}>
           <Text style={styles.guestText}>Sign in as guest</Text>
         </Pressable>
       </View>
