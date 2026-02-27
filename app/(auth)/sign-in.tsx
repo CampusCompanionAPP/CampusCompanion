@@ -1,115 +1,116 @@
-import { ThemedText } from '@/components/themed-text'
-import { ThemedView } from '@/components/themed-view'
-import { useSignIn } from '@clerk/clerk-expo'
-import type { EmailCodeFactor } from '@clerk/types'
-import { Link, useRouter } from 'expo-router'
-import * as React from 'react'
-import { 
-  Pressable, 
-  StyleSheet, 
-  TextInput, 
-  View, 
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { useSignIn } from "@clerk/clerk-expo";
+import type { EmailCodeFactor } from "@clerk/types";
+import { Link, useRouter } from "expo-router";
+import * as React from "react";
+import {
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
   Text,
-  Image, 
-  KeyboardAvoidingView, 
+  Image,
+  KeyboardAvoidingView,
   Platform,
- } from 'react-native'
+} from "react-native";
 
 export default function Page() {
-  const { signIn, setActive, isLoaded } = useSignIn()
-  const router = useRouter()
+  const { signIn, setActive, isLoaded } = useSignIn();
+  const router = useRouter();
 
-  const [emailAddress, setEmailAddress] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [code, setCode] = React.useState('')
-  const [showEmailCode, setShowEmailCode] = React.useState(false)
+  const [emailAddress, setEmailAddress] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [code, setCode] = React.useState("");
+  const [showEmailCode, setShowEmailCode] = React.useState(false);
 
   // Handle the submission of the sign-in form
   const onSignInPress = React.useCallback(async () => {
-    if (!isLoaded) return
+    if (!isLoaded) return;
 
     // Start the sign-in process using the email and password provided
     try {
       const signInAttempt = await signIn.create({
         identifier: emailAddress,
         password,
-      })
+      });
 
       // If sign-in process is complete, set the created session as active
       // and redirect the user
-      if (signInAttempt.status === 'complete') {
+      if (signInAttempt.status === "complete") {
         await setActive({
           session: signInAttempt.createdSessionId,
           navigate: async ({ session }) => {
             if (session?.currentTask) {
               // Check for tasks and navigate to custom UI to help users resolve them
               // See https://clerk.com/docs/guides/development/custom-flows/authentication/session-tasks
-              console.log(session?.currentTask)
-              return
+              console.log(session?.currentTask);
+              return;
             }
 
-            router.replace('/')
+            router.replace("/");
           },
-        })
-      } else if (signInAttempt.status === 'needs_second_factor') {
+        });
+      } else if (signInAttempt.status === "needs_second_factor") {
         // Check if email_code is a valid second factor
         // This is required when Client Trust is enabled and the user
         // is signing in from a new device.
         // See https://clerk.com/docs/guides/secure/client-trust
         const emailCodeFactor = signInAttempt.supportedSecondFactors?.find(
-          (factor): factor is EmailCodeFactor => factor.strategy === 'email_code',
-        )
+          (factor): factor is EmailCodeFactor =>
+            factor.strategy === "email_code",
+        );
 
         if (emailCodeFactor) {
           await signIn.prepareSecondFactor({
-            strategy: 'email_code',
+            strategy: "email_code",
             emailAddressId: emailCodeFactor.emailAddressId,
-          })
-          setShowEmailCode(true)
+          });
+          setShowEmailCode(true);
         }
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
-        console.error(JSON.stringify(signInAttempt, null, 2))
+        console.error(JSON.stringify(signInAttempt, null, 2));
       }
     } catch (err) {
       // See https://clerk.com/docs/guides/development/custom-flows/error-handling
       // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      console.error(JSON.stringify(err, null, 2));
     }
-  }, [isLoaded, signIn, setActive, router, emailAddress, password])
+  }, [isLoaded, signIn, setActive, router, emailAddress, password]);
 
   // Handle the submission of the email verification code
   const onVerifyPress = React.useCallback(async () => {
-    if (!isLoaded) return
+    if (!isLoaded) return;
 
     try {
       const signInAttempt = await signIn.attemptSecondFactor({
-        strategy: 'email_code',
+        strategy: "email_code",
         code,
-      })
+      });
 
-      if (signInAttempt.status === 'complete') {
+      if (signInAttempt.status === "complete") {
         await setActive({
           session: signInAttempt.createdSessionId,
           navigate: async ({ session }) => {
             if (session?.currentTask) {
               // Check for tasks and navigate to custom UI to help users resolve them
               // See https://clerk.com/docs/guides/development/custom-flows/authentication/session-tasks
-              console.log(session?.currentTask)
-              return
+              console.log(session?.currentTask);
+              return;
             }
 
-            router.replace('/')
+            router.replace("/");
           },
-        })
+        });
       } else {
-        console.error(JSON.stringify(signInAttempt, null, 2))
+        console.error(JSON.stringify(signInAttempt, null, 2));
       }
     } catch (err) {
-      console.error(JSON.stringify(err, null, 2))
+      console.error(JSON.stringify(err, null, 2));
     }
-  }, [isLoaded, signIn, setActive, router, code])
+  }, [isLoaded, signIn, setActive, router, code]);
 
   // Display email code verification form
   if (showEmailCode) {
@@ -130,39 +131,57 @@ export default function Page() {
           keyboardType="numeric"
         />
         <Pressable
-          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed,
+          ]}
           onPress={onVerifyPress}
         >
           <ThemedText style={styles.buttonText}>Verify</ThemedText>
         </Pressable>
       </ThemedView>
-    )
+    );
   }
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
+      <Image
+        source={require("@/assets/images/KSU_logo.png")}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      {/* <ThemedText type="title" style={styles.title}>
         Sign in
-      </ThemedText>
-      <ThemedText style={styles.label}>Email address</ThemedText>
+      </ThemedText> */}
+      {/* <ThemedText style={styles.label}>Email address</ThemedText> */}
       <TextInput
         style={styles.input}
         autoCapitalize="none"
         value={emailAddress}
-        placeholder="Enter email"
-        placeholderTextColor="#666666"
+        placeholder="Email"
+        placeholderTextColor="#C5C6C8"
         onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
         keyboardType="email-address"
       />
-      <ThemedText style={styles.label}>Password</ThemedText>
+      {/* <ThemedText style={styles.label}>Password</ThemedText> */}
       <TextInput
         style={styles.input}
         value={password}
-        placeholder="Enter password"
-        placeholderTextColor="#666666"
+        placeholder="Password"
+        placeholderTextColor="#C5C6C8"
         secureTextEntry={true}
         onChangeText={(password) => setPassword(password)}
       />
+
+      <View style={styles.linkContainer}>
+        <ThemedText>Don't have an account? </ThemedText>
+        <Link href="/sign-up">
+          <ThemedText type="link" style={{ color: "#FDBB30" }}>
+            Sign up
+          </ThemedText>
+        </Link>
+      </View>
+
       <Pressable
         style={({ pressed }) => [
           styles.button,
@@ -174,21 +193,27 @@ export default function Page() {
       >
         <ThemedText style={styles.buttonText}>Sign in</ThemedText>
       </Pressable>
-      <View style={styles.linkContainer}>
-        <ThemedText>Don't have an account? </ThemedText>
-        <Link href="/sign-up">
-          <ThemedText type="link">Sign up</ThemedText>
-        </Link>
-      </View>
     </ThemedView>
-  )
+  );
 }
+
+const GOLD = "#FDBB30";
+const BG = "#20201B";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    gap: 12,
+    // padding: 20,
+    // gap: 12,
+    backgroundColor: BG,
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  logo: {
+    marginTop: 91,
+    width: 157,
+    height: 148,
+    marginBottom: 38,
   },
   title: {
     marginBottom: 8,
@@ -199,39 +224,41 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   label: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 14,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    width: 288,
+    borderWidth: 2,
+    borderColor: "#C5C6C8",
     padding: 12,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "transparent",
+    marginBottom: 11,
   },
   button: {
-    backgroundColor: '#0a7ea4',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 8,
+    width: 288,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: GOLD,
+    paddingVertical: 14,
+    alignItems: "center",
+    backgroundColor: "transparent",
   },
   buttonPressed: {
     opacity: 0.7,
   },
   buttonDisabled: {
-    opacity: 0.5,
+    opacity: 1,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: GOLD,
+    fontWeight: "600",
   },
   linkContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 4,
-    marginTop: 12,
-    alignItems: 'center',
+    alignItems: "center",
+    marginBottom: 11,
   },
-})
+});
