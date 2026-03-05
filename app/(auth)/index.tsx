@@ -7,7 +7,7 @@ export default function AuthLanding() {
     <View style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={require("@/assets/images/KSU_logo.png")}
+          source={require("@assets/images/KSU_logo.png")}
           style={styles.logo}
           resizeMode="contain"
         />
