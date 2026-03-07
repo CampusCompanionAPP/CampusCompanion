@@ -4,16 +4,7 @@ import { useSignIn } from "@clerk/clerk-expo";
 import type { EmailCodeFactor } from "@clerk/types";
 import { Link, useRouter } from "expo-router";
 import * as React from "react";
-import {
-  Pressable,
-  StyleSheet,
-  TextInput,
-  View,
-  Text,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { Image, Pressable, StyleSheet, TextInput, View } from "react-native";
 
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -174,7 +165,7 @@ export default function Page() {
       />
 
       <View style={styles.linkContainer}>
-        <ThemedText>Don't have an account? </ThemedText>
+        <ThemedText>Don&apos;t have an account? </ThemedText>
         <Link href="/sign-up">
           <ThemedText type="link" style={{ color: "#FDBB30" }}>
             Sign up
