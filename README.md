@@ -4,6 +4,12 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Get started
 
+1. Clone the repository
+   ```bash
+   git clone https://github.com/CampusCompanionAPP/CampusCompanion.git
+   cd CampusCompanion
+   ```
+
 1. Install dependencies
 
    ```bash
