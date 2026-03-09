@@ -19,6 +19,8 @@ export default function TabLayout() {
           position: "absolute",
           bottom: 10,
           borderTopWidth: 0,
+          outlineWidth: 2,
+          outlineColor: "#FDBB30",
         },
         tabBarItemStyle: {
           justifyContent: "center",

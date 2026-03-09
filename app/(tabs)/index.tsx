@@ -11,10 +11,21 @@ export default function Home() {
           fontSize: 24,
           marginBottom: 10,
           position: "absolute",
-          top: 125,
+          top: 75,
         }}
       >
         Hello #name
+      </Text>
+      <Text
+        style={{
+          color: "white",
+          fontSize: 24,
+          marginBottom: 10,
+          position: "absolute",
+          top: 100,
+        }}
+      >
+        It is (dayoftheweek), (todays date)
       </Text>
       <ScheduleBox />
       <EventBox />

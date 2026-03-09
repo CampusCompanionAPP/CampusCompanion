@@ -33,7 +33,7 @@ export default function EventBox() {
 const styles = StyleSheet.create({
   eventCard: {
     position: "relative",
-    top: 70,
+    top: 5,
     borderRadius: 20,
     height: "30%",
     width: "80%",

@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     height: "30%",
     borderRadius: 20,
     padding: 15,
+    bottom: 50,
   },
   scheduleCardTitleLine: {
     marginBottom: 5,
@@ -86,12 +87,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
   },
   scheduleCardScheduleBox: {
-    height: 30,
+    height: 40,
     borderRadius: 20,
     backgroundColor: "#FDBB30",
     justifyContent: "center",
     alignItems: "center",
     marginTop: "auto",
+    outlineWidth: 1,
+    outlineColor: "black",
   },
   textColor: {
     color: "white",
