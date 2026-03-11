@@ -1,13 +1,13 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
-import { Link, router } from 'expo-router';
+import React from "react";
+import { View, Text, StyleSheet, Pressable, Image } from "react-native";
+import { Link, router } from "expo-router";
 
 export default function AuthLanding() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={require("@/assets/images/ksu-logo-emblem.png")}
+          source={require("@assets/images/KSU_logo.png")}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -27,18 +27,25 @@ export default function AuthLanding() {
 
         <Text style={styles.helperText}>Already have an account?</Text>
 
-        <Link href="/(auth)/sign-in" asChild>
-          <Pressable
-            style={({ pressed }) => [
-              styles.outlineButton,
-              pressed && { opacity: 0.9 },
-            ]}
-          >
-            <Text style={styles.outlineButtonText}>Sign in</Text>
-          </Pressable>
-        </Link>
+        {/* <Link href="/(auth)/sign-in" asChild> */}
+        <Pressable
+          onPress={() => router.push("/(auth)/sign-in")}
+          style={({ pressed }) => [
+            styles.outlineButton,
+            pressed && {
+              opacity: 0.9,
+              transform: [{ scale: 0.99 }],
+            },
+          ]}
+        >
+          <Text style={styles.outlineButtonText}>Sign in</Text>
+        </Pressable>
+        {/* </Link> */}
 
-        <Pressable onPress={() => router.replace("/")} style={styles.guestWrap}>
+        <Pressable
+          onPress={() => router.replace("/(tabs)")}
+          style={styles.guestWrap}
+        >
           <Text style={styles.guestText}>Sign in as guest</Text>
         </Pressable>
       </View>
@@ -46,72 +53,75 @@ export default function AuthLanding() {
   );
 }
 
-const GOLD = '#FDBB30';
-const BG = '#20201B';
-const MUTED = '#CFCFCF';
+const GOLD = "#FDBB30";
+const BG = "#20201B";
+const MUTED = "#CFCFCF";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: BG,
-    paddingHorizontal: 40,
-    justifyContent: 'center',
+    // paddingHorizontal: 30,
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
   content: {
-    alignItems: 'center',
+    alignItems: "center",
+    marginTop: 91,
   },
   logo: {
-    width: 230,
-    height: 230,
-    marginBottom: 18,
+    width: 157,
+    height: 148,
+    marginBottom: 20,
   },
   title: {
-    color: 'white',
-    fontSize: 22,
-    fontWeight: '700',
-    textAlign: 'center',
+    color: "white",
+    fontSize: 24,
+    fontWeight: "400",
+    textAlign: "center",
     lineHeight: 28,
-    marginBottom: 26,
+    marginBottom: 48,
   },
   primaryButton: {
-    width: '100%',
-    backgroundColor: 'white',
+    width: 288,
+    backgroundColor: "white",
     borderRadius: 999,
     paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 18,
+    alignItems: "center",
+    marginBottom: 48,
   },
   primaryButtonText: {
-    color: '#111',
+    color: "#111",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   helperText: {
-    color: MUTED,
-    fontSize: 14,
-    marginBottom: 12,
+    color: "#ffffff",
+    fontSize: 20,
+    fontWeight: 400,
+    marginBottom: 23,
   },
   outlineButton: {
-    width: '100%',
+    width: 288,
     borderRadius: 999,
     borderWidth: 2,
     borderColor: GOLD,
     paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 14,
-    backgroundColor: 'transparent',
+    alignItems: "center",
+    marginBottom: 7,
+    backgroundColor: "transparent",
   },
   outlineButtonText: {
     color: GOLD,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   guestWrap: {
-    paddingVertical: 8,
+    paddingVertical: 14,
   },
   guestText: {
-    color: MUTED,
+    color: "#C5C6C8",
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
