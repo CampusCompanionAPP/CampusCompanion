@@ -90,7 +90,7 @@ export default function EventsScreen() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: '#121212' 
+    backgroundColor: '#20201B' 
   },
   headerRow: {
     flexDirection: 'row',
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   searchIcon: { 
     fontSize: 18,
-    color: '#f59e0b' 
+    color: '#FDBB30' 
   },
   tabsContainer: { 
     paddingHorizontal: 16, 
@@ -135,10 +135,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10, 
     paddingHorizontal: 20, 
     borderRadius: 15, 
-    backgroundColor: '#3f3f46' 
+    backgroundColor: '#484848' 
   },
   activeTab: { 
-    backgroundColor: '#f59e0b' 
+    backgroundColor: '#FDBB30' 
   },
   tabText: { 
     color: '#d4d4d8', 
@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
     color: 'black' 
   },
   list: { 
-    paddingHorizontal: 16 
+    paddingHorizontal: 20, // Adds that 'gutter' on the sides of the screen
+    paddingBottom: 40, 
   }
 });
