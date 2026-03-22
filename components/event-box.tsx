@@ -33,13 +33,13 @@ export const EventCard = ({ event }: { event: any }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#484848', // Specific medium-grey from your screen
-    borderRadius: 24,           // More aggressive rounding for the 'premium' look
-    padding: 16,                // More padding inside the card
+    backgroundColor: '#484848', 
+    borderRadius: 24,           
+    padding: 16,                // padding inside the card
     flexDirection: 'row',
     alignItems: 'flex-start',   // Align items to the top
-    marginBottom: 16,           // More space between cards
-    minHeight: 140,             // Ensure the card has a substantial feel
+    marginBottom: 16,           // space between cards
+    minHeight: 140,             
   },
   imageContainer: {
     shadowColor: '#000',
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   image: {
-    width: 110,                 // Larger, fixed width
+    width: 110,                 
     height: 110,                // Match height for a perfect square
     borderRadius: 18,
     backgroundColor: '#27272a',
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   },
   title: {
-    color: '#FDBB30',           // The Gold color
+    color: '#FDBB30',           
     fontSize: 18,
     fontWeight: 'bold',
     letterSpacing: 0.2,
@@ -76,13 +76,13 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   infoText: {
-    color: '#FFFFFF',           // Bright white for high contrast
+    color: '#FFFFFF',           
     fontSize: 15,
     fontWeight: '700',
   },
   description: {
     color: '#E4E4E7',           // Light grey text
     fontSize: 13,
-    lineHeight: 18,             // Better readability
+    lineHeight: 18,             
   },
 });
