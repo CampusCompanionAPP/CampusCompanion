@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 
-export default function ScheduleBox() {
+export default function ScheduleCard() {
   return (
     <View style={styles.scheduleCard}>
       <View style={styles.scheduleCardTitleLine}>

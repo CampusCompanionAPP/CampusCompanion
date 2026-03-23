@@ -1,5 +1,5 @@
-import EventBox from "@/components/home-event-box";
-import ScheduleBox from "@/components/home-schedule-box";
+import EventCard from "@/components/home-event-card";
+import ScheduleCard from "@/components/home-schedule-card";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Home() {
@@ -27,8 +27,8 @@ export default function Home() {
       >
         It is (dayoftheweek), (todays date)
       </Text>
-      <ScheduleBox />
-      <EventBox />
+      <ScheduleCard />
+      <EventCard />
     </View>
   );
 }
