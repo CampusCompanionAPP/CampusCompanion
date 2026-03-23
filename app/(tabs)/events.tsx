@@ -1,4 +1,5 @@
-import { EventCard } from '@/components/event-box';
+import { EventCard } from '@/components/event-card';
+import { Colors } from '@/constants/theme';
 import React, { useState } from 'react';
 import {
   Image,
@@ -90,7 +91,7 @@ export default function EventsScreen() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: '#20201B' 
+    backgroundColor: Colors.light.background_gray, 
   },
   headerRow: {
     flexDirection: 'row',
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
   },
   searchBar: { 
     flex: 1,
-    backgroundColor: '#3f3f46', 
+    backgroundColor: Colors.light.secondary_gray, 
     flexDirection: 'row', 
     alignItems: 'center', 
     borderRadius: 10, 
@@ -135,10 +136,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10, 
     paddingHorizontal: 20, 
     borderRadius: 15, 
-    backgroundColor: '#484848' 
+    backgroundColor: Colors.light.secondary_gray 
   },
   activeTab: { 
-    backgroundColor: '#FDBB30' 
+    backgroundColor: Colors.light.KSU_gold 
   },
   tabText: { 
     color: '#d4d4d8', 

@@ -16,6 +16,10 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    KSU_gold: "#FDBB30",
+    background_gray: "#20201B",
+    secondary_gray: "#484848",
+    accent_gray: "#C5C6C8",
   },
   dark: {
     text: '#ECEDEE',

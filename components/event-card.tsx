@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/theme';
 import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -33,7 +34,7 @@ export const EventCard = ({ event }: { event: any }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#484848', 
+    backgroundColor: Colors.light.secondary_gray, 
     borderRadius: 24,           
     padding: 16,                // padding inside the card
     flexDirection: 'row',
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   },
   title: {
-    color: '#FDBB30',           
+    color: Colors.light.KSU_gold,           
     fontSize: 18,
     fontWeight: 'bold',
     letterSpacing: 0.2,
