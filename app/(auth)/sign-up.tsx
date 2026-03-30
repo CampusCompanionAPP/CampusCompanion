@@ -1,189 +1,356 @@
+import AnimatedInput from "@/components/AnimatedInput";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { useSignUp } from "@clerk/clerk-expo";
+import Timer from "@/components/Timer";
+import { COLORS } from "@/constants/color";
+import { supabase } from "@/services/database";
+import OtpInput from "@bhojaniasgar/react-native-otp-input";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
-import * as React from "react";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { useState } from "react";
+import {
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import Toast from "react-native-root-toast";
 
 export default function Page() {
-  const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
 
-  const [emailAddress, setEmailAddress] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [pendingVerification, setPendingVerification] = React.useState(false);
-  const [code, setCode] = React.useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // Handle submission of sign-up form
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [code, setCode] = useState("");
+
+  // useEffect(() => {
+  //   supabase.auth.getSession().then(({ data: { session } }) => {
+  //     if (session) {
+  //       router.replace("/(auth)/set-up");
+  //     }
+  //   });
+
+  //   const {
+  //     data: { subscription },
+  //   } = supabase.auth.onAuthStateChange((_, session) => {
+  //     if (session) {
+  //       router.replace("/(auth)/set-up");
+  //     }
+  //   });
+
+  //   return () => subscription.unsubscribe();
+  // }, []);
+
   const onSignUpPress = async () => {
-    if (!isLoaded) return;
-
-    // Start sign-up process using email and password provided
     try {
-      await signUp.create({
-        emailAddress,
-        password,
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password: password,
+        options: {
+          data: {
+            name: name,
+          },
+        },
       });
 
-      // Send user an email with verification code
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+      if (error) throw error;
+      else if (
+        data.user &&
+        data.user.identities &&
+        data.user.identities.length === 0
+      ) {
+        Alert.alert("the email is already existed", "", [{ text: "OK" }]);
+        return;
+      }
 
-      // Set 'pendingVerification' to true to display second form
-      // and capture code
       setPendingVerification(true);
-    } catch (err) {
-      // See https://clerk.com/docs/guides/development/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+    } catch (err: any) {
+      const errorMessage = err.message || "something went wrong";
+      Toast.show(errorMessage, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.CENTER,
+        shadow: true,
+        hideOnPress: true,
+        backgroundColor: COLORS.danger,
+        textColor: "#FFFFFF",
+      });
     }
   };
 
-  // Handle submission of verification form
-  const onVerifyPress = async () => {
-    if (!isLoaded) return;
+  const onVerifyPress = async (code: string) => {
+    if (!email || !code) return;
 
     try {
-      // Use the code the user provided to attempt verification
-      const signUpAttempt = await signUp.attemptEmailAddressVerification({
-        code,
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: email.trim(),
+        token: code.trim(),
+        type: "signup",
       });
 
-      // If verification was completed, set the session to active
-      // and redirect the user
-      if (signUpAttempt.status === "complete") {
-        await setActive({
-          session: signUpAttempt.createdSessionId,
-          navigate: async ({ session }) => {
-            if (session?.currentTask) {
-              // Check for tasks and navigate to custom UI to help users resolve them
-              // See https://clerk.com/docs/guides/development/custom-flows/authentication/session-tasks
-              console.log(session?.currentTask);
-              return;
-            }
+      if (error) throw error;
 
-            router.replace("/");
+      if (data.user) {
+        const { error: dbError } = await supabase.from("users").insert([
+          {
+            usr_id: data.user.id,
+            username: name.trim(),
+            email: email.trim(),
+            password: password.trim(),
+            first_name: "",
+            last_name: "",
+            img_url: "",
+            degree: "",
+            major: "",
+            grad_date: null,
+            language: "English",
           },
-        });
-      } else {
-        // If the status is not complete, check why. User may need to
-        // complete further steps.
-        console.error(JSON.stringify(signUpAttempt, null, 2));
+        ]);
+
+        if (dbError) {
+          console.error(dbError.message);
+        }
       }
-    } catch (err) {
-      // See https://clerk.com/docs/guides/development/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+
+      router.replace("/(auth)/set-up");
+
+      // if (data.session) {
+      //   router.replace("/(auth)/set-up");
+      // }
+    } catch (err: any) {
+      const errorMessage = err.message || "something went wrong";
+      Alert.alert("", errorMessage, [{ text: "OK" }]);
+
+      // Toast.show(errorMessage, {
+      //   duration: Toast.durations.LONG,
+      //   position: Toast.positions.CENTER,
+      //   shadow: true,
+      //   hideOnPress: true,
+      //   backgroundColor: COLORS.danger,
+      //   textColor: "#FFFFFF",
+      // });
     }
   };
 
   if (pendingVerification) {
     return (
-      <ThemedView style={styles.container}>
-        <ThemedText type="title" style={styles.title}>
-          Verify your email
+      <ThemedView style={[styles.container, { alignItems: "center" }]}>
+        <ThemedText type="title" style={[styles.title, { marginTop: 250 }]}>
+          Please Verify Email
         </ThemedText>
+
         <ThemedText style={styles.description}>
           A verification code has been sent to your email.
         </ThemedText>
-        <TextInput
-          style={styles.input}
-          value={code}
-          placeholder="Enter your verification code"
-          placeholderTextColor="#666666"
-          onChangeText={(code) => setCode(code)}
-          keyboardType="numeric"
+
+        <OtpInput
+          pinCount={6}
+          code={code}
+          selectionColor={"transparent"}
+          autoFocusOnLoad
+          editable
+          containerStyle={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "auto",
+          }}
+          size="custom"
+          codeInputFieldStyle={{
+            flex: 1,
+            outline: "none",
+            borderColor: COLORS.secondary,
+            color: COLORS.secondary,
+            borderWidth: 2,
+            width: 60,
+            height: 60,
+          }}
+          filledInputFieldStyle={{
+            outline: "none",
+            borderColor: COLORS.primary,
+            color: COLORS.primary,
+          }}
+          codeInputHighlightStyle={{
+            outline: "none",
+            borderColor: COLORS.secondary,
+            borderWidth: 3.5,
+          }}
+          errorInputFieldStyle={{
+            outline: "none",
+            borderColor: COLORS.danger,
+            color: COLORS.danger,
+          }}
+          onCodeChanged={(code) => setCode(code || "")}
+          onCodeFilled={(code) => {
+            onVerifyPress(code);
+          }}
         />
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={onVerifyPress}
-        >
-          <ThemedText style={styles.buttonText}>Verify</ThemedText>
-        </Pressable>
+
+        <Timer
+          seconds={120}
+          style={{ fontSize: 24, color: COLORS.secondary, paddingTop: 10 }}
+        />
       </ThemedView>
     );
   }
 
+  const getPasswordValidations = (password: string) => [
+    { label: "At least 12 characters", valid: password.length >= 12 },
+    { label: "Contains a number", valid: /\d/.test(password) },
+    {
+      label: "Contains a special character",
+      valid: /[@$!%*?&]/.test(password),
+    },
+  ];
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
-        Sign up
-      </ThemedText>
-      <ThemedText style={styles.label}>Email address</ThemedText>
-      <TextInput
-        style={styles.input}
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Enter email"
-        placeholderTextColor="#666666"
-        onChangeText={(email) => setEmailAddress(email)}
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
+      <Image
+        source={require("@/assets/images/KSU_logo.png")}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      <Text style={[styles.title, { marginTop: -20, marginBottom: 20 }]}>
+        Get started with your account
+      </Text>
+
+      <AnimatedInput
+        value={name}
+        placeholder="Username"
+        onChangeText={(name) => setName(name)}
+      />
+
+      <AnimatedInput
+        value={email}
+        placeholder="Email"
+        onChangeText={(email) => setEmail(email)}
         keyboardType="email-address"
       />
-      <ThemedText style={styles.label}>Password</ThemedText>
-      <TextInput
-        style={styles.input}
+
+      <AnimatedInput
         value={password}
-        placeholder="Enter password"
-        placeholderTextColor="#666666"
-        secureTextEntry={true}
+        placeholder="Password"
         onChangeText={(password) => setPassword(password)}
+        isPasswordField
       />
+
+      <View style={styles.passwordValidationContainer}>
+        {getPasswordValidations(password).map((item, index) => (
+          <View
+            key={index}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 3,
+            }}
+          >
+            <MaterialCommunityIcons
+              name={item.valid ? "check-circle-outline" : "circle-outline"}
+              size={14}
+              color={item.valid ? COLORS.primary : COLORS.danger}
+            />
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "400",
+                color: item.valid ? COLORS.primary : COLORS.danger,
+                marginBlock: 1,
+              }}
+            >
+              {item.label}
+            </Text>
+          </View>
+        ))}
+      </View>
+
       <Pressable
         style={({ pressed }) => [
           styles.button,
-          (!emailAddress || !password) && styles.buttonDisabled,
+          (!name ||
+            !email ||
+            !getPasswordValidations(password).every((item) => item.valid)) &&
+            styles.buttonDisabled,
           pressed && styles.buttonPressed,
         ]}
         onPress={onSignUpPress}
-        disabled={!emailAddress || !password}
+        disabled={
+          !name ||
+          !email ||
+          !getPasswordValidations(password).every((item) => item.valid)
+        }
       >
         <ThemedText style={styles.buttonText}>Continue</ThemedText>
       </Pressable>
+
       <View style={styles.linkContainer}>
-        <ThemedText>Have an account? </ThemedText>
+        <ThemedText style={{ color: COLORS.secondary }}>
+          Have an account?{" "}
+        </ThemedText>
         <Link href="/sign-in">
-          <ThemedText type="link">Sign in</ThemedText>
+          <ThemedText
+            type="link"
+            style={{ color: COLORS.primary, fontWeight: 600 }}
+          >
+            Sign in
+          </ThemedText>
         </Link>
       </View>
-    </ThemedView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    gap: 12,
+    backgroundColor: COLORS.background,
   },
+  logo: { width: 157, height: 148, marginBottom: 38 },
   title: {
-    marginBottom: 8,
+    // marginBottom: 8,
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: 500,
+  },
+  passwordValidationContainer: {
+    width: 288,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "baseline",
+  },
+  passwordValidationList: {
+    fontSize: 16,
   },
   description: {
-    fontSize: 14,
-    marginBottom: 16,
-    opacity: 0.8,
-  },
-  label: {
-    fontWeight: "600",
-    fontSize: 14,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
     fontSize: 16,
-    backgroundColor: "#fff",
+    marginBottom: 16,
+    color: COLORS.secondary,
   },
   button: {
-    backgroundColor: "#0a7ea4",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    width: 288,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
+    paddingVertical: 14,
     alignItems: "center",
-    marginTop: 8,
+    backgroundColor: "transparent",
+    marginTop: 20,
   },
   buttonPressed: {
     opacity: 0.7,
@@ -192,7 +359,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   buttonText: {
-    color: "#fff",
+    color: COLORS.primary,
     fontWeight: "600",
   },
   linkContainer: {
