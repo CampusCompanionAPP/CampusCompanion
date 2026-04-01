@@ -61,7 +61,7 @@ export default function AuthLanding() {
         />
 
         <Pressable
-          onPress={() => router.replace("/(tabs)")}
+          onPress={() => router.replace("/(tabs)/(home)")}
           style={styles.guestWrap}
         >
           <Text style={styles.guestText}>Sign in as guest</Text>

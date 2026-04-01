@@ -14,11 +14,14 @@ import {
 } from "react-native";
 
 interface AnimatedInputProps extends TextInputProps {
-  value: string;
+  value: any;
   placeholder: string;
   style?: StyleProp<TextStyle>;
   isPasswordField?: boolean;
   noAnimation?: boolean;
+  width?: any;
+  height?: any;
+  placeholderSize?: any;
 }
 
 const AnimatedInput: React.FC<AnimatedInputProps> = ({
@@ -27,6 +30,9 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
   style,
   isPasswordField = false,
   noAnimation = false,
+  width = 288,
+  height = 46,
+  placeholderSize = 16,
   ...props
 }) => {
   const animated = useRef(new Animated.Value(value ? 1 : 0)).current;
@@ -56,7 +62,13 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
   };
 
   return (
-    <View style={[styles.inputWrapper, isFocused && styles.inputWrapperHover]}>
+    <View
+      style={[
+        styles.inputWrapper,
+        isFocused && styles.inputWrapperHover,
+        { width: width, height: height },
+      ]}
+    >
       {!noAnimation && (
         <Animated.Text style={[styles.floatingLabel, floatingLabelStyle]}>
           {placeholder}
@@ -68,6 +80,7 @@ const AnimatedInput: React.FC<AnimatedInputProps> = ({
         selectionColor={COLORS.primary}
         style={[
           styles.wrappedInput,
+          { fontSize: placeholderSize },
           Platform.OS === "web" && ({ outlineStyle: "none" } as any),
           style,
           isPasswordField && { width: `90%`, marginLeft: -7, marginRight: 10 },
@@ -126,8 +139,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
 
-    width: 288,
-    height: 46,
+    // width: 288,
+    // height: 46,
     borderWidth: 2,
     borderColor: COLORS.secondary,
     // padding: 12,
@@ -145,7 +158,7 @@ const styles = StyleSheet.create({
     height: `100%`,
     marginLeft: 10,
     color: COLORS.primary,
-    fontSize: 16,
+    // fontSize: 16,
   },
   floatingLabel: {
     position: "absolute",

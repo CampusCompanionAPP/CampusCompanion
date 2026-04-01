@@ -25,7 +25,7 @@ export default function Page() {
 
       if (error) throw error;
 
-      if (data.session) router.replace("/(settings)");
+      if (data.session) router.replace("/(tabs)/(home)");
     } catch (err: any) {
       const errorMessage = err.message || "something went wrong";
       Alert.alert("", "Email or password is invalid", [{ text: "OK" }]);

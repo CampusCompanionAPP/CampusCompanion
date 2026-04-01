@@ -13,17 +13,26 @@ interface ButtonProps extends PressableProps {
   text: string;
   outline?: boolean;
   style?: StyleProp<ViewStyle>;
+  textSize?: any;
+  width?: any;
+  height?: any;
+  textWeight?: any;
 }
 
 const Button: React.FC<ButtonProps> = ({
   text,
   outline = false,
   style,
+  textSize = 16,
+  width = 288,
+  height = 55,
+  textWeight = "600",
   ...props
 }) => {
   return (
     <Pressable
       style={({ pressed }) => [
+        { width: width, height: height },
         outline ? styles.outline_button : styles.button,
         pressed
           ? outline
@@ -37,6 +46,7 @@ const Button: React.FC<ButtonProps> = ({
       {({ pressed }) => (
         <ThemedText
           style={[
+            { fontSize: textSize, fontWeight: textWeight },
             outline ? styles.outline_buttonText : styles.buttonText,
             pressed ? (outline ? { color: "#FFFFFF" } : null) : null,
           ]}
@@ -52,19 +62,20 @@ export default Button;
 
 const styles = StyleSheet.create({
   outline_button: {
-    width: 288,
+    // width: 288,
     borderRadius: 999,
     borderWidth: 2,
     borderColor: COLORS.primary,
-    paddingVertical: 14,
+    // paddingVertical: 14,
     alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "transparent",
   },
 
   outline_buttonText: {
     color: COLORS.primary,
-    fontWeight: "600",
-    fontSize: 16,
+    // fontWeight: "600",
+    // fontSize: 16,
   },
 
   outline_pressed: {
@@ -73,19 +84,21 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    width: 288,
+    // width: 288,
     backgroundColor: COLORS.primary,
     borderRadius: 999,
     borderWidth: 2,
     borderColor: COLORS.primary,
-    paddingVertical: 14,
+    // paddingVertical: 14,
+    // height: 55,
     alignItems: "center",
+    justifyContent: "center",
   },
 
   buttonText: {
     color: "#000000",
-    fontWeight: "600",
-    fontSize: 16,
+    // fontWeight: "600",
+    // fontSize: 16,
   },
 
   button_pressed: {

@@ -124,7 +124,7 @@ const Page = () => {
       Alert.alert("", error.message, [{ text: "OK" }]);
     } else if (data.length === 0)
       Alert.alert("", "Failed to update the data", [{ text: "OK" }]);
-    else router.replace("/(settings)");
+    else router.replace("/(tabs)/(home)");
   };
 
   return (
@@ -149,7 +149,7 @@ const Page = () => {
         </Text>
         <Button text="Continue" outline onPress={continueCustomization} />
         <Link
-          href="/(home)"
+          href="/(tabs)/(home)"
           style={{ display: "flex", justifyContent: "center" }}
         >
           <ThemedText
