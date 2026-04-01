@@ -10,6 +10,8 @@ the following pages are re-designed and tested at IPhone 16 Plus Simulator
 `npx expo run:i`
 thus, if you render them on web browser, it may look different.
 
+Moreover, I deliberately set to Home page as the first page to test the app.
+
 ### Current Features the repo has
 
 - sign-in
@@ -21,20 +23,20 @@ thus, if you render them on web browser, it may look different.
 
 <table>
   <tr>
-    <td aligh="center">
-      <image src="public/ios/reg.gif" width="100">
+    <td align="center">
+      <image src="public/ios/reg.gif" width="200">
       <p>Create an account</p>
     </td>
-    <td aligh="center">
-      <image src="public/ios/settings.gif" width="100">
+    <td align="center">
+      <image src="public/ios/settings.gif" width="200">
       <p>Update data</p>
     </td>
-    <td aligh="center">
-      <image src="public/ios/create_schedule.gif" width="100">
+    <td align="center">
+      <image src="public/ios/create_schedule.gif" width="200">
       <p>Create a schedule</p>
     </td>
-    <td aligh="center">
-      <image src="public/ios/delete_schedule.gif" width="100">
+    <td align="center">
+      <image src="public/ios/delete_schedule.gif" width="200">
       <p>Delete a schedule</p>
     </td>
   </tr>
