@@ -5,8 +5,10 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -17,7 +19,8 @@ export default function TabLayout() {
           height: 60,
           marginHorizontal: 15,
           position: "absolute",
-          bottom: 10,
+          // bottom: 10,
+          bottom: insets.bottom,
           borderTopWidth: 0,
           outlineWidth: 2,
           outlineColor: "#FDBB30",
@@ -36,7 +39,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(home)/index"
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
@@ -45,7 +48,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="map"
+        name="(map)/index"
         options={{
           title: "Map",
           tabBarIcon: ({ color }) => (
@@ -54,7 +57,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="events"
+        name="(events)/index"
         options={{
           title: "Events",
           tabBarIcon: ({ color }) => (
@@ -63,7 +66,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="(settings)/index"
         options={{
           title: "Settings",
           tabBarIcon: ({ color }) => (

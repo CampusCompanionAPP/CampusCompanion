@@ -1,13 +1,14 @@
+import Button from "@src/components/Button";
+import { router } from "expo-router";
 import React from "react";
-import { View, Text, StyleSheet, Pressable, Image } from "react-native";
-import { Link, router } from "expo-router";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function AuthLanding() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={require("@assets/images/KSU_logo.png")}
+          source={require("@/assets/images/KSU_logo.png")}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -15,20 +16,30 @@ export default function AuthLanding() {
           Start your journey with{"\n"}your portable guide.
         </Text>
 
-        <Pressable
-          onPress={() => router.push("/(auth)/sign-up")} // replace with /sign-up if you have it
+        {/* <Pressable
+          onPress={() => router.push("/(auth)/sign-up")}
           style={({ pressed }) => [
             styles.primaryButton,
             pressed && { opacity: 0.9, transform: [{ scale: 0.99 }] },
           ]}
         >
           <Text style={styles.primaryButtonText}>Create account</Text>
-        </Pressable>
+        </Pressable> */}
+
+        <Button
+          text="Create account"
+          style={{
+            backgroundColor: "#FFF",
+            borderColor: "#FFF",
+            marginBottom: 48,
+          }}
+          onPress={() => router.push("/(auth)/sign-up")}
+        />
 
         <Text style={styles.helperText}>Already have an account?</Text>
 
         {/* <Link href="/(auth)/sign-in" asChild> */}
-        <Pressable
+        {/* <Pressable
           onPress={() => router.push("/(auth)/sign-in")}
           style={({ pressed }) => [
             styles.outlineButton,
@@ -39,11 +50,18 @@ export default function AuthLanding() {
           ]}
         >
           <Text style={styles.outlineButtonText}>Sign in</Text>
-        </Pressable>
+        </Pressable> */}
         {/* </Link> */}
 
+        <Button
+          text="Sign in"
+          outline
+          style={{ marginBottom: 7 }}
+          onPress={() => router.push("/(auth)/sign-in")}
+        />
+
         <Pressable
-          onPress={() => router.replace("/(tabs)")}
+          onPress={() => router.replace("/(tabs)/(home)")}
           style={styles.guestWrap}
         >
           <Text style={styles.guestText}>Sign in as guest</Text>
@@ -73,6 +91,7 @@ const styles = StyleSheet.create({
     width: 157,
     height: 148,
     marginBottom: 20,
+    marginTop: 90,
   },
   title: {
     color: "white",

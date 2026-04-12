@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function EventBox() {
+export default function EventCard() {
   return (
     <View style={styles.eventCard}>
       <View style={styles.eventCardTitle}>
