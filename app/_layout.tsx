@@ -29,11 +29,11 @@ export default function RootLayout() {
   const router = useRouter();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, _) => {
-      if (event === "SIGNED_IN") {
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
         router.replace("/(tabs)/(home)");
-      } else {
-        router.replace("/(tabs)/(home)");
+      } else if (event === "SIGNED_OUT") {
+        router.replace("/(auth)/sign-in");
       }
     });
   }, []);

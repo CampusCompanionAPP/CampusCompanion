@@ -8,13 +8,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   scheme: 'campuscompanion',
   plugins: [
     [
-      'react-native-maps',
-      {
-        androidGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_API_KEY,
-        iosGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_IOS_API_KEY,
-      },
-    ],
-    [
       'expo-location',
       {
         locationWhenInUsePermission:
@@ -24,8 +17,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   ios: {
     bundleIdentifier: 'com.yourcompany.campuscompanion',
+    config: {
+      googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_IOS_API_KEY,
+    },
   },
   android: {
     package: 'com.yourcompany.campuscompanion',
+    config: {
+      googleMaps: {
+        apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_API_KEY,
+      },
+    },
   },
 })

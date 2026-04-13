@@ -37,18 +37,17 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const data = await fetchUserData();
     setUserData(data);
     const schedule = await fetchSchedule();
     setScheduleData(schedule);
-  };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      load();
-      setIsLoading(false);
+      load().finally(() => setIsLoading(false));
     }, [load]),
   );
 

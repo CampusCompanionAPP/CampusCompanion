@@ -1,4 +1,4 @@
-import { supabase } from "@src/lib/supabase";
+import { supabase } from "@src/services/database";
 import * as Location from "expo-location";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {

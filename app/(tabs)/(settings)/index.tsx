@@ -500,7 +500,7 @@ const Page = () => {
                 labelField="label"
                 valueField="value"
                 placeholder={userData?.major || "Select a major"}
-                value={degree}
+                value={major}
                 onFocus={() => setIsMajFocus(true)}
                 onBlur={() => setIsMajFocus(false)}
                 onChange={(major) => {
