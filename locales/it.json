@@ -1,0 +1,131 @@
+{
+  "normal": {
+    "ok": "OK",
+    "cancel": "Annulla",
+    "err-msg": "Qualcosa è andato storto"
+  },
+  "err": {
+    "permit": "Permesso negato",
+    "imgErr": "Impossibile aggiornare l'immagine",
+    "noSelect": "Sezione annullata",
+    "noImg": "Nessuna immagine selezionata",
+    "noPass": "Password errata"
+  },
+  "auth": {
+    "title": "Inizia il tuo viaggio con\nla tua guida tascabile",
+    "btn1": "Crea account",
+    "helper": "Hai già un account?",
+    "btn2": "Accedi",
+    "guest": "Accedi come ospite"
+  },
+  "sign-up": {
+    "email-err": "l'email esiste già",
+    "title": "Crea il tuo account",
+    "usr": "Nome utente",
+    "email": "Email",
+    "pass": "Password",
+    "btn1": "Continua",
+    "link1": "Hai un account?",
+    "link2": "Accedi",
+    "crit1": "Almeno 12 caratteri",
+    "crit2": "Contiene un numero",
+    "crit3": "Contiene un carattere speciale",
+    "veriTitle": "Verifica l'email",
+    "veriDesc": "Un codice di verifica è stato inviato alla tua email."
+  },
+  "sign-in": {
+    "email": "Email",
+    "pass": "Password",
+    "link1": "Non hai un account?",
+    "link2": "Iscriviti",
+    "btn1": "Accedi",
+    "errMsg": "Email o password non valide"
+  },
+  "set-up": {
+    "question": "Vuoi completare il profilo?",
+    "btn1": "Continua",
+    "link1": "Più tardi",
+    "title": "Personalizza profilo",
+    "f_name": "Nome",
+    "l_name": "Cognome",
+    "img": "Seleziona immagine",
+    "deg": "Seleziona laurea",
+    "maj": "Seleziona specializzazione",
+    "grad": "Data di laurea prevista",
+    "lng": "Seleziona una lingua",
+    "btn2": "Salva"
+  },
+  "home": {
+    "mor": "Buongiorno",
+    "eve": "Buonasera",
+    "aft": "Buon pomeriggio",
+    "course": "Orario lezioni",
+    "add": "Aggiungi orario",
+    "c": "Corso",
+    "pre": "Prefisso corso",
+    "num": "Numero corso",
+    "daytime": "Giorno e ora lezione",
+    "day": "Seleziona giorno",
+    "loc": "Posizione",
+    "la": "situato a",
+    "code": "Codice edificio",
+    "rnum": "Numero aula",
+    "Monday, Wednesday, Friday": "Lunedì, Mercoledì, Venerdì",
+    "Monday, Wednesday": "Lunedì, Mercoledì",
+    "Tuesday, Thursday": "Martedì, Giovedì",
+    "M W F": "L M V",
+    "M W": "L M",
+    "T R": "M G",
+    "start": "inizia alle",
+    "delete": "Elimina orario"
+  },
+  "setting": {
+    "sugg": "Vuoi creare un account?",
+    "cbtn": "Crea account",
+    "prof": "Profilo",
+    "cusr": "Cambia nome utente",
+    "usr": "Username",
+    "cname": "Cambia nome",
+    "fname": "Nome",
+    "lname": "Cognome",
+    "cimg": "Cambia immagine",
+    "qimg": "Seleziona immagine",
+    "cdeg": "Cambia laurea e specializzazione",
+    "qdeg": "Seleziona laurea",
+    "qmaj": "Seleziona specializzazione",
+    "cgrad": "Cambia data di laurea",
+    "pri": "Privacy",
+    "cemail": "Cambia email",
+    "email": "Email",
+    "cpass": "Cambia password",
+    "prepass": "Password precedente",
+    "newpass": "Nuova password",
+    "clang": "Cambia lingua",
+    "qlang": "Seleziona lingua",
+    "ubtn": "Aggiorna",
+    "qsout": "Vuoi uscire?",
+    "sout": "Esci"
+  },
+  "map": {
+    "head": "Mappa del Campus",
+    "search": "Cerca edificio, aula o lezione...",
+    "camp": "Campus",
+    "gps": "Il mio GPS",
+    "gloc": "Rilevamento posizione...",
+    "alert": "GPS disattivato. Puoi cercare edifici, ma il navigatore richiede il GPS.",
+    "guide": "Cerca un edificio o aula per guidare lo studente."
+  },
+  "event": {
+    "Today": "Oggi",
+    "This Week": "Questa settimana",
+    "Social": "Sociale",
+    "Academic": "Accademico",
+    "search": "Cerca"
+  },
+  "tab": {
+    "home": "Home",
+    "map": "Mappa",
+    "event": "Eventi",
+    "setting": "Impostazioni"
+  }
+}

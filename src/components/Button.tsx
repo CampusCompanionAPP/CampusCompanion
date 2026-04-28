@@ -17,6 +17,7 @@ interface ButtonProps extends PressableProps {
   width?: any;
   height?: any;
   textWeight?: any;
+  color?: any;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -27,6 +28,7 @@ const Button: React.FC<ButtonProps> = ({
   width = 288,
   height = 55,
   textWeight = "600",
+  color = COLORS.primary,
   ...props
 }) => {
   return (
@@ -36,7 +38,7 @@ const Button: React.FC<ButtonProps> = ({
         outline ? styles.outline_button : styles.button,
         pressed
           ? outline
-            ? styles.outline_pressed
+            ? styles.outline_pressed && { backgroundColor: color }
             : styles.button_pressed
           : null,
         style,
@@ -47,7 +49,7 @@ const Button: React.FC<ButtonProps> = ({
         <ThemedText
           style={[
             { fontSize: textSize, fontWeight: textWeight },
-            outline ? styles.outline_buttonText : styles.buttonText,
+            outline ? { color: color } : styles.buttonText,
             pressed ? (outline ? { color: "#FFFFFF" } : null) : null,
           ]}
         >
@@ -72,14 +74,14 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
 
-  outline_buttonText: {
-    color: COLORS.primary,
-    // fontWeight: "600",
-    // fontSize: 16,
-  },
+  // outline_buttonText: {
+  //   color: COLORS.primary,
+  //   // fontWeight: "600",
+  //   // fontSize: 16,
+  // },
 
   outline_pressed: {
-    backgroundColor: COLORS.primary,
+    // backgroundColor: COLORS.primary,
     transform: [{ scale: 0.98 }],
   },
 

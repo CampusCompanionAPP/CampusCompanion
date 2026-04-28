@@ -1,15 +1,19 @@
+import i18n, { setDefaultLanugage } from "@/i18n";
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import AnimatedInput from "@src/components/AnimatedInput";
 import Button from "@src/components/Button";
 import ExpandableTab from "@src/components/ExpandableTab";
 import Loading from "@src/components/Loading";
 import { COLORS } from "@src/constants/color";
 import { degreeOptions, majorOptions } from "@src/constants/degree-major";
-import { languageOptions } from "@src/constants/language";
+import { languageOptions, locales } from "@src/constants/language";
 import { supabase } from "@src/services/database";
-import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { User } from "@supabase/supabase-js";
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect, useRef, useState } from "react";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
@@ -37,12 +41,15 @@ interface UserData {
   degree: string;
   major: string;
   grad_date: string;
+  language: string;
 }
 
 const Page = () => {
-  const scrollRef = useRef<ScrollView>(null);
+  const { t } = useTranslation();
+
   const insets = useSafeAreaInsets();
 
+  const [user, setUser] = useState<User | undefined>();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [username, setUsername] = useState("");
   const [image, setImage] = useState<string | null>(null);
@@ -58,7 +65,7 @@ const Page = () => {
   const [email, setEmail] = useState("");
   const [prepassword, setPrepassword] = useState("");
   const [password, setPassword] = useState("");
-  const [language, setLanguage] = useState("English");
+  const [language, setLanguage] = useState("");
 
   const [isDegFocus, setIsDegFocus] = useState(false);
   const [isMajFocus, setIsMajFocus] = useState(false);
@@ -84,19 +91,23 @@ const Page = () => {
       } = await supabase.auth.getUser();
 
       if (user) {
-        const { data, error } = await supabase
-          .from("users")
-          .select(
-            "username, email, password, first_name, last_name, img_url, degree, major, grad_date, language",
-          )
-          .eq("usr_id", user.id)
-          .single();
+        setUser(user);
 
-        if (error) throw error;
-        setUserData(data);
+        if (!user.is_anonymous) {
+          const { data, error } = await supabase
+            .from("users")
+            .select(
+              "username, email, password, first_name, last_name, img_url, degree, major, grad_date, language",
+            )
+            .eq("usr_id", user.id)
+            .single();
+
+          if (error) throw error;
+          setUserData(data);
+        }
       }
     } catch (err: any) {
-      Alert.alert("", err.message, [{ text: "OK" }]);
+      Alert.alert("", t("normal.err-msg"), [{ text: t("normal.ok") }]);
     } finally {
       setIsLoading(false);
     }
@@ -105,10 +116,6 @@ const Page = () => {
   const updateData = async (col: any, newData: any) => {
     try {
       setIsLoading(true);
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
 
       if (user) {
         if (col === "img_url") {
@@ -141,7 +148,7 @@ const Page = () => {
         await fetchUserData();
       }
     } catch (err: any) {
-      Alert.alert("", err.message, [{ text: "OK" }]);
+      Alert.alert("", t("normal.err-msg"), [{ text: t("normal.ok") }]);
     } finally {
       setIsLoading(false);
     }
@@ -151,7 +158,7 @@ const Page = () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== "granted") {
-      Alert.alert("Permission Denied", "Could not update the profile image");
+      Alert.alert(t("err.permit"), t("err.imgErr"));
       return;
     }
 
@@ -191,12 +198,53 @@ const Page = () => {
 
       return data.publicUrl;
     } catch (err: any) {
-      Alert.alert("", err.message, [{ text: "OK" }]);
+      Alert.alert("", t("normal.err-msg"), [{ text: t("normal.ok") }]);
       return null;
     }
   };
 
+  const onSignOut = async () => {
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.signOut();
+
+      if (error) throw new Error();
+      setDefaultLanugage();
+      router.replace("/(auth)");
+    } catch (err: any) {
+      Alert.alert("", t("normal.err-msg"), [{ text: t("normal.ok") }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) return <Loading />;
+
+  if (user?.is_anonymous)
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: COLORS.background,
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 50,
+          paddingBottom: 100,
+        }}
+      >
+        <Text
+          style={{
+            color: COLORS.secondary,
+            fontSize: 30,
+            fontWeight: 600,
+            textAlign: "center",
+          }}
+        >
+          {t("setting.sugg")}
+        </Text>
+        <Button outline text={t("setting.cbtn")} onPress={() => onSignOut()} />
+      </SafeAreaView>
+    );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
@@ -231,11 +279,11 @@ const Page = () => {
         <Text style={styles.profile_name}>{userData?.username}</Text>
 
         <View style={styles.section}>
-          <Text style={styles.header}>Profile</Text>
+          <Text style={styles.header}>{t("setting.prof")}</Text>
           <View style={styles.separator} />
 
           <ExpandableTab
-            header="Change Username"
+            header={t("setting.cusr")}
             onExpand={(expanded) => {
               if (!expanded) {
                 setUsername("");
@@ -248,7 +296,7 @@ const Page = () => {
             <View style={styles.content}>
               <AnimatedInput
                 value={username}
-                placeholder={userData?.username || ""}
+                placeholder={userData?.username || t("setting.usr")}
                 onChangeText={(username) => setUsername(username)}
                 noAnimation
               />
@@ -259,7 +307,7 @@ const Page = () => {
                     opacity: 0.5,
                   },
                 ]}
-                text="Update"
+                text={t("setting.ubtn")}
                 outline
                 disabled={!username || userData?.username === username}
                 onPress={() => {
@@ -272,7 +320,7 @@ const Page = () => {
           </ExpandableTab>
 
           <ExpandableTab
-            header="Change Name"
+            header={t("setting.cname")}
             onExpand={(expanded) => {
               if (!expanded) {
                 setFirstName("");
@@ -286,13 +334,13 @@ const Page = () => {
             <View style={styles.content}>
               <AnimatedInput
                 value={firstName}
-                placeholder={userData?.first_name || ""}
+                placeholder={userData?.first_name || t("setting.fname")}
                 onChangeText={(firstName) => setFirstName(firstName)}
                 noAnimation
               />
               <AnimatedInput
                 value={lastName}
-                placeholder={userData?.last_name || ""}
+                placeholder={userData?.last_name || t("setting.lname")}
                 onChangeText={(lastName) => setLastName(lastName)}
                 noAnimation
               />
@@ -306,7 +354,7 @@ const Page = () => {
                     opacity: 0.5,
                   },
                 ]}
-                text="Update"
+                text={t("setting.ubtn")}
                 outline
                 disabled={
                   !firstName ||
@@ -326,7 +374,7 @@ const Page = () => {
           </ExpandableTab>
 
           <ExpandableTab
-            header="Change Image"
+            header={t("setting.cimg")}
             onExpand={(expanded) => {
               if (!expanded) {
                 setImage("");
@@ -360,7 +408,7 @@ const Page = () => {
                             fontSize: 12,
                           }}
                         >
-                          Select an image
+                          {t("setting.qimg")}
                         </Text>,
                       ]
                     : [
@@ -384,7 +432,7 @@ const Page = () => {
                     opacity: 0.5,
                   },
                 ]}
-                text="Update"
+                text={t("setting.ubtn")}
                 outline
                 disabled={!image || image === userData?.img_url}
                 onPress={() => {
@@ -397,7 +445,7 @@ const Page = () => {
           </ExpandableTab>
 
           <ExpandableTab
-            header="Change Degree & Major"
+            header={t("setting.cdeg")}
             onExpand={(expanded) => {
               if (!expanded) {
                 setDegree("");
@@ -431,7 +479,7 @@ const Page = () => {
                 data={degreeOptions}
                 labelField="label"
                 valueField="value"
-                placeholder={userData?.degree || "Select a degree"}
+                placeholder={userData?.degree || t("setting.qdeg")}
                 value={degree}
                 onFocus={() => setIsDegFocus(true)}
                 onBlur={() => setIsDegFocus(false)}
@@ -499,7 +547,7 @@ const Page = () => {
                 data={allMajor}
                 labelField="label"
                 valueField="value"
-                placeholder={userData?.major || "Select a major"}
+                placeholder={userData?.major || t("setting.qmaj")}
                 value={major}
                 onFocus={() => setIsMajFocus(true)}
                 onBlur={() => setIsMajFocus(false)}
@@ -553,7 +601,7 @@ const Page = () => {
                     opacity: 0.5,
                   },
                 ]}
-                text="Update"
+                text={t("setting.qbtn")}
                 outline
                 disabled={
                   !degree ||
@@ -572,7 +620,7 @@ const Page = () => {
           </ExpandableTab>
 
           <ExpandableTab
-            header="Change Graduation Date"
+            header={t("setting.cgrad")}
             onExpand={(expanded) => {
               if (!expanded) {
                 setGradDate(undefined);
@@ -585,6 +633,7 @@ const Page = () => {
             <View style={styles.content}>
               <DateTimePicker
                 display={Platform.OS === "ios" ? "spinner" : "default"}
+                locale={i18n.language}
                 textColor={COLORS.primary}
                 accentColor="red"
                 style={{
@@ -624,7 +673,7 @@ const Page = () => {
                     opacity: 0.5,
                   },
                 ]}
-                text="Update"
+                text={t("setting.ubtn")}
                 outline
                 disabled={
                   !gradDate ||
@@ -649,11 +698,11 @@ const Page = () => {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.header}>Privacy</Text>
+          <Text style={styles.header}>{t("setting.pri")}</Text>
           <View style={styles.separator} />
 
           <ExpandableTab
-            header="Change Email"
+            header={t("setting.cemail")}
             onExpand={(expanded) => {
               if (!expanded) {
                 setEmail("");
@@ -666,7 +715,7 @@ const Page = () => {
             <View style={styles.content}>
               <AnimatedInput
                 value={email}
-                placeholder={userData?.email || ""}
+                placeholder={userData?.email || t("setting.email")}
                 onChangeText={(email) => setEmail(email)}
                 noAnimation
               />
@@ -677,7 +726,7 @@ const Page = () => {
                     opacity: 0.5,
                   },
                 ]}
-                text="Update"
+                text={t("setting.ubtn")}
                 outline
                 disabled={!email || userData?.email === email}
                 onPress={() => {
@@ -690,7 +739,7 @@ const Page = () => {
           </ExpandableTab>
 
           <ExpandableTab
-            header="Change Password"
+            header={t("setting.cpass")}
             onExpand={(expanded) => {
               if (!expanded) {
                 setPassword("");
@@ -704,14 +753,14 @@ const Page = () => {
             <View style={styles.content}>
               <AnimatedInput
                 value={prepassword}
-                placeholder={"Previous password"}
+                placeholder={t("setting.prepass")}
                 onChangeText={(prepassword) => setPrepassword(prepassword)}
                 noAnimation
               />
 
               <AnimatedInput
                 value={password}
-                placeholder={"New password"}
+                placeholder={t("setting.newpass")}
                 onChangeText={(password) => setPassword(password)}
                 noAnimation
               />
@@ -722,7 +771,7 @@ const Page = () => {
                     opacity: 0.5,
                   },
                 ]}
-                text="Update"
+                text={t("setting.ubtn")}
                 outline
                 disabled={!password || !prepassword}
                 onPress={() => {
@@ -732,7 +781,9 @@ const Page = () => {
                     setPrepassword("");
                     setOpenedTab("");
                   } else {
-                    Alert.alert("", "Wrong Password", [{ text: "OK" }]);
+                    Alert.alert("", t("err.noPass"), [
+                      { text: t("normal.ok") },
+                    ]);
                   }
                 }}
               />
@@ -740,7 +791,7 @@ const Page = () => {
           </ExpandableTab>
 
           <ExpandableTab
-            header="Change Language"
+            header={t("setting.clang")}
             onExpand={(expanded) => {
               if (!expanded) {
                 setLanguage("");
@@ -776,7 +827,7 @@ const Page = () => {
                 data={languageOptions}
                 labelField="label"
                 valueField="value"
-                placeholder={language || "Select a language"}
+                placeholder={userData?.language || t("setting.qlang")}
                 value={language}
                 onFocus={() => setIsLangFocus(true)}
                 onBlur={() => setIsLangFocus(false)}
@@ -827,36 +878,41 @@ const Page = () => {
                     opacity: 0.5,
                   },
                 ]}
-                text="Update"
+                text={t("setting.ubtn")}
                 outline
                 disabled={!language}
                 onPress={() => {
                   updateData("language", language);
                   setLanguage("");
                   setOpenedTab("");
+                  i18n.changeLanguage(locales[language]);
                 }}
               />
             </View>
           </ExpandableTab>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.header}>Data</Text>
-          <View style={styles.separator} />
-
-          <ExpandableTab
-            header="Location History"
-            onExpand={(expanded) => {
-              if (!expanded) {
-                Keyboard.dismiss();
-              }
-            }}
-            expanded={openedTap === "history"}
-            onToggle={() => toggleTab("history")}
-          >
-            <View style={styles.content}></View>
-          </ExpandableTab>
-        </View>
+        <Button
+          style={[
+            {
+              marginTop: 20,
+              transform: [{ scale: 0.8 }],
+              borderColor: COLORS.danger,
+            },
+          ]}
+          text={t("setting.sout")}
+          outline
+          onPress={() => {
+            Alert.alert("", t("setting.qsout"), [
+              {
+                text: t("normal.ok"),
+                onPress: () => onSignOut(),
+              },
+              { text: t("normal.cancel") },
+            ]);
+          }}
+          color={COLORS.danger}
+        />
       </ScrollView>
     </SafeAreaView>
   );

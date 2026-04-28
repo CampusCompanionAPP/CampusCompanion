@@ -1,9 +1,11 @@
+import "../i18n";
+
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
@@ -12,49 +14,33 @@ import { useColorScheme } from "@src/hooks/use-color-scheme";
 import { COLORS } from "@src/constants/color";
 import { supabase } from "@src/services/database";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { RootSiblingParent } from "react-native-root-siblings";
+import { syncUserLanguage } from "../i18n";
 
 export const unstable_settings = {
   anchor: "(tabs)",
 };
 
-const INACTIVITY_LIMIT = 15 * 60 * 1000;
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const { t } = useTranslation();
 
-  const segments = useSegments();
+  const colorScheme = useColorScheme();
   const router = useRouter();
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
+        if (!session.user.is_anonymous) syncUserLanguage();
         router.replace("/(tabs)/(home)");
       } else if (event === "SIGNED_OUT") {
         router.replace("/(auth)/sign-in");
       }
     });
   }, []);
-
-  const timeRef = useRef<number | undefined>(undefined);
-
-  const resetTime = () => {
-    if (timeRef.current) clearTimeout(timeRef.current);
-
-    timeRef.current = setTimeout(async () => {
-      await supabase.auth.signOut();
-      router.replace("/(auth)/sign-in");
-    }, INACTIVITY_LIMIT);
-  };
-
-  // useEffect(() => {
-  //   resetTime();
-  //   return () => {
-  //     if (timeRef.current) clearTimeout(timeRef.current);
-  //   };
-  // }, []);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -75,7 +61,7 @@ export default function RootLayout() {
               name="modal"
               options={{
                 presentation: "modal",
-                title: "Add a schedule",
+                title: t("home.add"),
                 headerStyle: { backgroundColor: COLORS.background },
                 headerTintColor: COLORS.primary,
                 headerTitleStyle: { fontWeight: 700 },

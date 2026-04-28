@@ -1,3 +1,4 @@
+
 export const class_days = [
   { prefix: "M W F", label: "Monday, Wednesday, Friday" },
   { prefix: "M W", label: "Monday, Wednesday" },

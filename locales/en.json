@@ -1,0 +1,142 @@
+{
+  "normal": {
+    "ok": "OK",
+    "cancel": "CANCEL",
+    "err-msg": "something went wrong"
+  },
+  "err": {
+    "permit": "Permission Denied",
+    "imgErr": "Could not update the profile image",
+    "noSelect": "Section Canceled",
+    "noImg": "Did not select any image",
+    "noPass": "Wrong Password",
+    "failUpt": "Failed to update the data"
+  },
+  "auth": {
+    "title": "Start your journey with\nyour portable guide",
+    "btn1": "Create account",
+    "helper": "Already have an account?",
+    "btn2": "Sign in",
+    "guest": "Sign in as guest"
+  },
+  "sign-up": {
+    "email-err": "the email is already existed",
+    "title": "Get started with your account",
+    "usr": "Username",
+    "email": "Email",
+    "pass": "Password",
+    "btn1": "Continue",
+    "link1": "Have an Account?",
+    "link2": "Sign in",
+    "crit1": "At least 12 characters",
+    "crit2": "Contains a number",
+    "crit3": "Contains a special character",
+
+    "veriTitle": "Please Verify Email",
+    "veriDesc": "A verification code has been sent to your email."
+  },
+  "sign-in": {
+    "email": "Email",
+    "pass": "Password",
+    "link1": "Don&apos;t have an account?",
+    "link2": "Sign up",
+    "btn1": "Sign in",
+    "errMsg": "Email or password in invalid"
+  },
+  "set-up": {
+    "question": "Would you like to complete customizing your profile?",
+    "btn1": "Continue",
+    "link1": "Maybe Later",
+
+    "title": "Customize the profile",
+    "f_name": "First Name",
+    "l_name": "Last Name",
+    "img": "Selec an image",
+    "deg": "Select a degree",
+    "maj": "Select a major",
+    "grad": "Expected Graduation Date",
+    "lng": "Select a language",
+
+    "btn2": "Save"
+  },
+  "home": {
+    "mor": "Good morning",
+    "eve": "Good evening",
+    "aft": "Good afternoon",
+    "course": "Course Schedule",
+
+    "add": "Add a schedule",
+    "c": "Course",
+    "pre": "Select a course prefix",
+    "num": "Course Number",
+    "daytime": "Class Day & Time",
+    "day": "Select a course day",
+    "loc": "Location",
+    "la": "located at",
+    "code": "Select a building code",
+    "rnum": "Room Number",
+
+    "Monday, Wednesday, Friday": "Monday, Wednesday, Friday",
+    "Monday, Wednesday": "Monday, Wednesday",
+    "Tuesday, Thursday": "Tuesday, Thursday",
+    "M W F": "M W F",
+    "M W": "M W",
+    "T R": "T R",
+    "start": "starting at",
+
+    "delete": "Delete a Scheudle"
+  },
+  "setting": {
+    "sugg": "Would you like to create an account?",
+    "cbtn": "Create account",
+    "prof": "Profile",
+    "cusr": "Change Username",
+    "usr": "Username",
+    "cname": "Change Name",
+    "fname": "First Name",
+    "lname": "Last Name",
+    "cimg": "Change Image",
+    "qimg": "Select an image",
+    "cdeg": "Change Degree & Major",
+    "qdeg": "Select a degree",
+    "qmaj": "Select a major",
+    "cgrad": "Change Graduation Date",
+
+    "pri": "Privacy",
+    "cemail": "Change Email",
+    "email": "Email",
+    "cpass": "Change Password",
+    "prepass": "Previous password",
+    "newpass": "New password",
+    "clang": "Change Language",
+    "qlang": "Select a language",
+
+    "ubtn": "Update",
+
+    "qsout": "Are you signing out?",
+    "sout": "Sign out"
+  },
+  "map": {
+    "head": "Campus Map",
+    "search": "Search building, room, or class...",
+    "camp": "Campus",
+    "gps": "My GPS",
+    "gloc": "Getting your current location...",
+    "alert": "Location permission is off. You can still search buildings, but routing needs GPS.",
+    "guide": "Search a building, classroom, or class section to guide the student there."
+  },
+  "event": {
+    "Today": "Today",
+    "This Week": "This Week",
+    "Social": "Social",
+    "Academic": "Academic",
+
+    "search": "Search"
+  },
+  "tab": {
+    "home": "Home",
+    "map": "Map",
+    "event": "Events",
+    "setting": "Settings"
+  }
+}

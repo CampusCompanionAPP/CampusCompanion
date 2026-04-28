@@ -1,10 +1,19 @@
+import i18n from "@/i18n";
+import { locales } from "@/src/constants/language";
 import Button from "@src/components/Button";
 import Loading from "@src/components/Loading";
 import { COLORS } from "@src/constants/color";
 import { supabase } from "@src/services/database";
-import { fetchSchedule, fetchUserData, UserData } from "@src/services/userService";
+import {
+  fetchSchedule,
+  fetchUser,
+  fetchUserData,
+  UserData,
+} from "@src/services/userService";
+import { User } from "@supabase/supabase-js";
 import { Link, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -21,6 +30,8 @@ import {
 } from "react-native-safe-area-context";
 
 export default function Home() {
+  const { t } = useTranslation();
+  const [user, setUser] = useState<User | null>();
   const [userData, setUserData] = useState<UserData | null>();
   const [scheduleData, setScheduleData] = useState<any[] | null>();
   const [date, setDate] = useState(new Date());
@@ -38,15 +49,20 @@ export default function Home() {
   }, []);
 
   const load = useCallback(async () => {
-    const data = await fetchUserData();
-    setUserData(data);
-    const schedule = await fetchSchedule();
-    setScheduleData(schedule);
+    const user = await fetchUser();
+    setUser(user);
+
+    if (!user?.is_anonymous) {
+      const data = await fetchUserData();
+      setUserData(data);
+      const schedule = await fetchSchedule();
+      setScheduleData(schedule);
+    }
   }, []);
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
+      // setIsLoading(true);
       load().finally(() => setIsLoading(false));
     }, [load]),
   );
@@ -63,13 +79,35 @@ export default function Home() {
 
       await load();
     } catch (err: any) {
-      Alert.alert("", err.message, [{ text: "OK" }]);
+      Alert.alert("", t("normal.err-msg"), [{ text: t("normal.ok") }]);
     } finally {
       setIsDeleting(false);
     }
   };
 
-  if (isLoading) return <Loading />;
+  const formatLocalTime = (time: string) => {
+    const isPM = time.includes("PM");
+    const isAM = time.includes("AM");
+
+    let [hours, minutes] = time
+      .replace(/(AM|PM)/, "")
+      .split(":")
+      .map(Number);
+
+    if (isPM && hours < 12) hours += 12;
+    if (isAM && hours === 12) hours = 0;
+
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date.toLocaleTimeString(i18n.language, {
+      hour: "2-digit",
+      minute: "2-digit",
+
+      hour12: true,
+    });
+  };
+
+  if (!userData || !scheduleData) return <Loading />;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
@@ -101,11 +139,11 @@ export default function Home() {
             // top: 75,
           }}
         >
-          {(date.getHours() < 12 && "Good morning") ||
-            (date.getHours() >= 18 && "Good evening") ||
-            "Good afternoon"}
+          {(date.getHours() < 12 && t("home.mor")) ||
+            (date.getHours() >= 18 && t("home.eve")) ||
+            t("home.aft")}
           {", "}
-          {userData?.username}
+          {userData?.username || "Owl"}
         </Text>
         <Text
           style={{
@@ -117,158 +155,166 @@ export default function Home() {
             // top: 100,
           }}
         >
-          {date.toLocaleString("en-US", {
+          {date.toLocaleString(locales[userData?.language || "English"], {
             weekday: "long",
             month: "long",
             day: "2-digit",
             year: "numeric",
           })}
         </Text>
+
         <Text style={{ color: "#FFF", fontSize: 18, marginTop: 10 }}>
-          {date.toLocaleTimeString([], {
+          {date.toLocaleTimeString(locales[userData?.language || "English"], {
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
             hour12: true,
           })}
         </Text>
-        {/* <ScheduleCard /> */}
 
-        <View
-          style={{
-            width: `80%`,
-            // height: `50%`,
-            height: 500,
-            backgroundColor: "#484848",
-            borderRadius: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 30,
-          }}
-        >
+        {user?.is_anonymous ? (
+          <Image
+            source={require("@assets/images/KSU_logo_2.png")}
+            style={{
+              width: 350,
+              height: 350,
+              tintColor: COLORS.secondary,
+              marginTop: 100,
+            }}
+          />
+        ) : (
           <View
             style={{
-              width: `100%`,
-              height: "auto",
-              flexDirection: "row",
+              width: `80%`,
+              // height: `50%`,
+              height: 500,
+              backgroundColor: "#484848",
+              borderRadius: 20,
+              justifyContent: "center",
               alignItems: "center",
-              justifyContent: "space-evenly",
-              marginBlock: 10,
+              marginTop: 30,
             }}
           >
-            <Image
-              source={require("@/assets/images/KSU_logo.png")}
-              style={{ width: 35, height: 35 }}
-            />
-            <Text
+            <View
               style={{
-                fontSize: 24,
-                color: "white",
-
-                fontWeight: "bold",
+                width: `100%`,
+                height: "auto",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                marginBlock: 10,
               }}
             >
-              {/* Today&apos;s Schedule */}
-              Course Schedule
-            </Text>
-          </View>
-
-          <ScrollView style={{ width: `100%` }}>
-            {/* {scheduleData} */}
-
-            {isDeleting ? (
-              <View
+              <Image
+                source={require("@/assets/images/KSU_logo.png")}
+                style={{ width: 35, height: 35 }}
+              />
+              <Text
                 style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignContent: "center",
+                  fontSize: 24,
+                  color: "white",
+
+                  fontWeight: "bold",
                 }}
               >
-                <ActivityIndicator size="large" color={COLORS.primary} />
-              </View>
-            ) : (
-              scheduleData &&
-              scheduleData.map((data) => (
-                <Pressable
-                  key={data.schedule_id}
-                  style={({ pressed }) => [
-                    {
-                      height: 70,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      paddingInline: 10,
-                      marginInline: 5,
-                      marginBlock: 10,
-                      borderRadius: 10,
-                      borderWidth: 2,
-                      borderColor: COLORS.primary,
-                    },
-                    pressed && {
-                      backgroundColor: COLORS.primary,
-                    },
-                  ]}
-                  onLongPress={() => {
-                    Alert.alert("Delete a Schedule", data.course, [
-                      {
-                        text: "Ok",
-                        onPress: () => deleteSchedule(data.schedule_id),
-                      },
-                      { text: "Cancel" },
-                    ]);
+                {t("home.course")}
+              </Text>
+            </View>
+
+            <ScrollView style={{ width: `100%` }}>
+              {/* {scheduleData} */}
+
+              {isDeleting ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignContent: "center",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 600,
-                      color: COLORS.secondary,
-                      textAlign: "center",
+                  <ActivityIndicator size="large" color={COLORS.primary} />
+                </View>
+              ) : (
+                scheduleData &&
+                scheduleData.map((data) => (
+                  <Pressable
+                    key={data.schedule_id}
+                    style={({ pressed }) => [
+                      {
+                        height: 70,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        paddingInline: 10,
+                        marginInline: 5,
+                        marginBlock: 10,
+                        borderRadius: 10,
+                        borderWidth: 2,
+                        borderColor: COLORS.primary,
+                      },
+                      pressed && {
+                        backgroundColor: COLORS.primary,
+                      },
+                    ]}
+                    onLongPress={() => {
+                      Alert.alert(t("home.delete"), data.course, [
+                        {
+                          text: t("normal.ok"),
+                          onPress: () => deleteSchedule(data.schedule_id),
+                        },
+                        { text: t("normal.cancel") },
+                      ]);
                     }}
                   >
-                    {data.course}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 600,
-                      color: COLORS.secondary,
-                      textAlign: "center",
-                    }}
-                  >
-                    {data.day_time}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 600,
-                      color: COLORS.secondary,
-                      textAlign: "center",
-                    }}
-                  >
-                    {data.location}
-                  </Text>
-                </Pressable>
-              ))
-            )}
-          </ScrollView>
-          <Link href={"/modal"} asChild>
-            <Button
-              text="+"
-              width={50}
-              height={50}
-              textSize={24}
-              textWeight={800}
-              style={{ marginBlock: 5 }}
-              outline
-            />
-          </Link>
-        </View>
-
-        {/* <EventCard />
-        <EventCard />
-        <EventCard />
-        <EventCard /> */}
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: COLORS.secondary,
+                        textAlign: "center",
+                      }}
+                    >
+                      {data.course}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: COLORS.secondary,
+                        textAlign: "center",
+                      }}
+                    >
+                      {t("home." + data.day_time.split(/\s(?=\d)/)[0]) +
+                        "\n" +
+                        formatLocalTime(data.day_time.split(/\s(?=\d)/)[1])}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: COLORS.secondary,
+                        textAlign: "center",
+                      }}
+                    >
+                      {data.location}
+                    </Text>
+                  </Pressable>
+                ))
+              )}
+            </ScrollView>
+            <Link href={"/modal"} asChild>
+              <Button
+                text="+"
+                width={50}
+                height={50}
+                textSize={24}
+                textWeight={800}
+                style={{ marginBlock: 5 }}
+                outline
+              />
+            </Link>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

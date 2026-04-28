@@ -1,0 +1,131 @@
+{
+  "normal": {
+    "ok": "OK",
+    "cancel": "Annuler",
+    "err-msg": "Une erreur est survenue"
+  },
+  "err": {
+    "permit": "Permission refusée",
+    "imgErr": "Impossible de mettre à jour l'image",
+    "noSelect": "Section annulée",
+    "noImg": "Aucune image sélectionnée",
+    "noPass": "Mot de passe incorrect"
+  },
+  "auth": {
+    "title": "Commencez votre voyage avec\nvotre guide portable",
+    "btn1": "Créer un compte",
+    "helper": "Vous avez déjà un compte ?",
+    "btn2": "Se connecter",
+    "guest": "Mode invité"
+  },
+  "sign-up": {
+    "email-err": "cet e-mail existe déjà",
+    "title": "Créer votre compte",
+    "usr": "Nom d'utilisateur",
+    "email": "E-mail",
+    "pass": "Mot de passe",
+    "btn1": "Continuer",
+    "link1": "Vous avez un compte ?",
+    "link2": "Se connecter",
+    "crit1": "Au moins 12 caractères",
+    "crit2": "Contient un chiffre",
+    "crit3": "Contient un caractère spécial",
+    "veriTitle": "Vérifier votre e-mail",
+    "veriDesc": "Un code de vérification a été envoyé sur votre e-mail."
+  },
+  "sign-in": {
+    "email": "E-mail",
+    "pass": "Mot de passe",
+    "link1": "Pas de compte ?",
+    "link2": "S'inscrire",
+    "btn1": "Se connecter",
+    "errMsg": "E-mail ou mot de passe invalide"
+  },
+  "set-up": {
+    "question": "Voulez-vous finir de personnaliser votre profil ?",
+    "btn1": "Continuer",
+    "link1": "Plus tard",
+    "title": "Personnaliser le profil",
+    "f_name": "Prénom",
+    "l_name": "Nom",
+    "img": "Choisir une image",
+    "deg": "Choisir un diplôme",
+    "maj": "Choisir une filière",
+    "grad": "Date de remise des diplômes prévue",
+    "lng": "Choisir une langue",
+    "btn2": "Enregistrer"
+  },
+  "home": {
+    "mor": "Bonjour",
+    "eve": "Bonsoir",
+    "aft": "Bon après-midi",
+    "course": "Emploi du temps",
+    "add": "Ajouter un cours",
+    "c": "Cours",
+    "pre": "Préfixe du cours",
+    "num": "Numéro du cours",
+    "daytime": "Jour et heure du cours",
+    "day": "Jour du cours",
+    "loc": "Emplacement",
+    "la": "situé à",
+    "code": "Code du bâtiment",
+    "rnum": "Numéro de salle",
+    "Monday, Wednesday, Friday": "Lundi, Mercredi, Vendredi",
+    "Monday, Wednesday": "Lundi, Mercredi",
+    "Tuesday, Thursday": "Mardi, Jeudi",
+    "M W F": "L M V",
+    "M W": "L M",
+    "T R": "M J",
+    "start": "commence à",
+    "delete": "Supprimer l'horaire"
+  },
+  "setting": {
+    "sugg": "Voulez-vous créer un compte ?",
+    "cbtn": "Créer un compte",
+    "prof": "Profil",
+    "cusr": "Changer le nom d'utilisateur",
+    "usr": "Pseudo",
+    "cname": "Changer de nom",
+    "fname": "Prénom",
+    "lname": "Nom",
+    "cimg": "Changer l'image",
+    "qimg": "Choisir une image",
+    "cdeg": "Changer diplôme et filière",
+    "qdeg": "Choisir un diplôme",
+    "qmaj": "Choisir une filière",
+    "cgrad": "Changer la date de fin d'études",
+    "pri": "Confidentialité",
+    "cemail": "Changer l'e-mail",
+    "email": "E-mail",
+    "cpass": "Changer le mot de passe",
+    "prepass": "Ancien mot de passe",
+    "newpass": "Nouveau mot de passe",
+    "clang": "Changer de langue",
+    "qlang": "Choisir une langue",
+    "ubtn": "Mettre à jour",
+    "qsout": "Voulez-vous vous déconnecter ?",
+    "sout": "Déconnexion"
+  },
+  "map": {
+    "head": "Plan du campus",
+    "search": "Bâtiment, salle ou cours...",
+    "camp": "Campus",
+    "gps": "Mon GPS",
+    "gloc": "Localisation en cours...",
+    "alert": "La localisation est désactivée. Recherche possible, mais l'itinéraire nécessite le GPS.",
+    "guide": "Recherchez un lieu pour y guider l'étudiant."
+  },
+  "event": {
+    "Today": "Aujourd'hui",
+    "This Week": "Cette semaine",
+    "Social": "Social",
+    "Academic": "Académique",
+    "search": "Rechercher"
+  },
+  "tab": {
+    "home": "Accueil",
+    "map": "Carte",
+    "event": "Événements",
+    "setting": "Réglages"
+  }
+}

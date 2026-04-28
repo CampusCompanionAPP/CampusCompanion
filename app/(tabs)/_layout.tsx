@@ -5,9 +5,12 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
+  const { t } = useTranslation();
+
   const insets = useSafeAreaInsets();
   return (
     <Tabs
@@ -41,7 +44,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(home)/index"
         options={{
-          title: "Home",
+          title: t("tab.home"),
           tabBarIcon: ({ color }) => (
             <FontAwesome6 name="house" size={24} color={color} />
           ),
@@ -50,7 +53,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(map)/index"
         options={{
-          title: "Map",
+          title: t("tab.map"),
           tabBarIcon: ({ color }) => (
             <Entypo name="map" size={24} color={color} />
           ),
@@ -59,7 +62,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(events)/index"
         options={{
-          title: "Events",
+          title: t("tab.event"),
           tabBarIcon: ({ color }) => (
             <FontAwesome name="calendar" size={24} color={color} />
           ),
@@ -68,7 +71,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(settings)/index"
         options={{
-          title: "Settings",
+          title: t("tab.setting"),
           tabBarIcon: ({ color }) => (
             <Feather name="settings" size={24} color={color} />
           ),

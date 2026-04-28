@@ -5,6 +5,7 @@ import { COLORS } from "@src/constants/color";
 import { supabase } from "@src/services/database";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Image, ScrollView, StyleSheet, View } from "react-native";
 
 export default function Page() {
@@ -15,6 +16,8 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [showEmailCode, setShowEmailCode] = useState(false);
+
+  const { t } = useTranslation();
 
   const onSignInPress = async () => {
     try {
@@ -27,8 +30,8 @@ export default function Page() {
 
       if (data.session) router.replace("/(tabs)/(home)");
     } catch (err: any) {
-      const errorMessage = err.message || "something went wrong";
-      Alert.alert("", "Email or password is invalid", [{ text: "OK" }]);
+      const errorMessage = err.message || t("normal.err-msg");
+      Alert.alert("", t("sign-in.errMsg"), [{ text: t("normal.ok") }]);
     }
   };
 
@@ -55,28 +58,28 @@ export default function Page() {
 
       <AnimatedInput
         value={email}
-        placeholder="Email"
+        placeholder={t("sign-in.email")}
         onChangeText={(email) => setEmail(email)}
         keyboardType="email-address"
       />
 
       <AnimatedInput
         value={password}
-        placeholder="Password"
+        placeholder={t("sign-in.pass")}
         onChangeText={(password) => setPassword(password)}
         isPasswordField
       />
 
       <View style={styles.linkContainer}>
         <ThemedText style={{ color: COLORS.secondary }}>
-          Don&apos;t have an account?{" "}
+          {t("sign-in.link1")}{" "}
         </ThemedText>
         <Link href="/sign-up">
           <ThemedText
             type="link"
             style={{ color: COLORS.primary, fontWeight: 600 }}
           >
-            Sign up
+            {t("sign-in.link2")}
           </ThemedText>
         </Link>
       </View>
@@ -94,7 +97,7 @@ export default function Page() {
       </Pressable> */}
 
       <Button
-        text="Sign in"
+        text={t("sign-in.btn1")}
         outline
         disabled={!email || !password}
         style={[(!email || !password) && { opacity: 0.5 }]}

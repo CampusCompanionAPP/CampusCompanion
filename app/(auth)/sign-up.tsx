@@ -1,13 +1,14 @@
+import OtpInput from "@bhojaniasgar/react-native-otp-input";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AnimatedInput from "@src/components/AnimatedInput";
 import { ThemedText } from "@src/components/themed-text";
 import { ThemedView } from "@src/components/themed-view";
 import Timer from "@src/components/Timer";
 import { COLORS } from "@src/constants/color";
 import { supabase } from "@src/services/database";
-import OtpInput from "@bhojaniasgar/react-native-otp-input";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Image,
@@ -28,6 +29,8 @@ export default function Page() {
 
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
+
+  const { t } = useTranslation();
 
   // useEffect(() => {
   //   supabase.auth.getSession().then(({ data: { session } }) => {
@@ -65,13 +68,13 @@ export default function Page() {
         data.user.identities &&
         data.user.identities.length === 0
       ) {
-        Alert.alert("the email is already existed", "", [{ text: "OK" }]);
+        Alert.alert(t("sign-up.email-err"), "", [{ text: t("normal.ok") }]);
         return;
       }
 
       setPendingVerification(true);
     } catch (err: any) {
-      const errorMessage = err.message || "something went wrong";
+      const errorMessage = err.message || t("normal.err-msg");
       Toast.show(errorMessage, {
         duration: Toast.durations.LONG,
         position: Toast.positions.CENTER,
@@ -123,8 +126,8 @@ export default function Page() {
       //   router.replace("/(auth)/set-up");
       // }
     } catch (err: any) {
-      const errorMessage = err.message || "something went wrong";
-      Alert.alert("", errorMessage, [{ text: "OK" }]);
+      const errorMessage = err.message || t("normal.err-msg");
+      Alert.alert("", errorMessage, [{ text: t("normal.ok") }]);
 
       // Toast.show(errorMessage, {
       //   duration: Toast.durations.LONG,
@@ -141,11 +144,11 @@ export default function Page() {
     return (
       <ThemedView style={[styles.container, { alignItems: "center" }]}>
         <ThemedText type="title" style={[styles.title, { marginTop: 250 }]}>
-          Please Verify Email
+          {t("sign-up.veriTitle")}
         </ThemedText>
 
         <ThemedText style={styles.description}>
-          A verification code has been sent to your email.
+          {t("sign-up.veriDesc")}
         </ThemedText>
 
         <OtpInput
@@ -201,10 +204,10 @@ export default function Page() {
   }
 
   const getPasswordValidations = (password: string) => [
-    { label: "At least 12 characters", valid: password.length >= 12 },
-    { label: "Contains a number", valid: /\d/.test(password) },
+    { label: t("sign-up.crit1"), valid: password.length >= 12 },
+    { label: t("sign-up.crit2"), valid: /\d/.test(password) },
     {
-      label: "Contains a special character",
+      label: t("sign-up.crit3"),
       valid: /[@$!%*?&]/.test(password),
     },
   ];
@@ -226,25 +229,25 @@ export default function Page() {
         resizeMode="contain"
       />
       <Text style={[styles.title, { marginTop: -20, marginBottom: 20 }]}>
-        Get started with your account
+        {t("sign-up.title")}
       </Text>
 
       <AnimatedInput
         value={name}
-        placeholder="Username"
+        placeholder={t("sign-up.usr")}
         onChangeText={(name) => setName(name)}
       />
 
       <AnimatedInput
         value={email}
-        placeholder="Email"
+        placeholder={t("sign-up.email")}
         onChangeText={(email) => setEmail(email)}
         keyboardType="email-address"
       />
 
       <AnimatedInput
         value={password}
-        placeholder="Password"
+        placeholder={t("sign-up.pass")}
         onChangeText={(password) => setPassword(password)}
         isPasswordField
       />
@@ -296,19 +299,19 @@ export default function Page() {
           !getPasswordValidations(password).every((item) => item.valid)
         }
       >
-        <ThemedText style={styles.buttonText}>Continue</ThemedText>
+        <ThemedText style={styles.buttonText}>{t("sign-up.btn1")}</ThemedText>
       </Pressable>
 
       <View style={styles.linkContainer}>
         <ThemedText style={{ color: COLORS.secondary }}>
-          Have an account?{" "}
+          {t("sign-up.link1")}{" "}
         </ThemedText>
         <Link href="/sign-in">
           <ThemedText
             type="link"
             style={{ color: COLORS.primary, fontWeight: 600 }}
           >
-            Sign in
+            {t("sign-up.link2")}
           </ThemedText>
         </Link>
       </View>
@@ -341,6 +344,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
     color: COLORS.secondary,
+    textAlign: "center",
   },
   button: {
     width: 288,

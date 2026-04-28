@@ -1,6 +1,13 @@
 import { supabase } from "@src/services/database";
 import * as Location from "expo-location";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   FlatList,
@@ -122,6 +129,8 @@ function formatDuration(duration?: string) {
 }
 
 export default function Map() {
+  const { t } = useTranslation();
+
   const mapRef = useRef<MapView | null>(null);
 
   const [campus, setCampus] = useState<CampusSlug>("kennesaw");
@@ -216,40 +225,43 @@ export default function Map() {
     }
   }, [campus]);
 
-  const searchDestinations = useCallback(async (text: string) => {
-    const normalized = text.trim().toLowerCase();
+  const searchDestinations = useCallback(
+    async (text: string) => {
+      const normalized = text.trim().toLowerCase();
 
-    if (!normalized) {
-      setSuggestions([]);
-      return;
-    }
-
-    try {
-      setLoadingSearch(true);
-
-      const { data, error } = await supabase
-        .from("map_search_index")
-        .select(
-          "result_type,building_id,room_id,class_section_id,campus_slug,label,subtitle,lat,lng",
-        )
-        .eq("campus_slug", campus)
-        .ilike("search_text", `%${normalized}%`)
-        .limit(8);
-
-      if (error) {
-        console.error("Search error:", error);
+      if (!normalized) {
         setSuggestions([]);
         return;
       }
 
-      setSuggestions((data ?? []) as SearchResult[]);
-    } catch (err) {
-      console.error("Unexpected error during search:", err);
-      setSuggestions([]);
-    } finally {
-      setLoadingSearch(false);
-    }
-  }, [campus]);
+      try {
+        setLoadingSearch(true);
+
+        const { data, error } = await supabase
+          .from("map_search_index")
+          .select(
+            "result_type,building_id,room_id,class_section_id,campus_slug,label,subtitle,lat,lng",
+          )
+          .eq("campus_slug", campus)
+          .ilike("search_text", `%${normalized}%`)
+          .limit(8);
+
+        if (error) {
+          console.error("Search error:", error);
+          setSuggestions([]);
+          return;
+        }
+
+        setSuggestions((data ?? []) as SearchResult[]);
+      } catch (err) {
+        console.error("Unexpected error during search:", err);
+        setSuggestions([]);
+      } finally {
+        setLoadingSearch(false);
+      }
+    },
+    [campus],
+  );
 
   async function handleSelectDestination(item: SearchResult) {
     setSelected(item);
@@ -326,7 +338,7 @@ export default function Map() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topPanel}>
-        <Text style={styles.heading}>Campus Map</Text>
+        <Text style={styles.heading}>{t("map.head")}</Text>
 
         <View style={styles.switcher}>
           <Pressable
@@ -367,7 +379,7 @@ export default function Map() {
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder="Search building, room, or class..."
+          placeholder={t("map.search")}
           placeholderTextColor="#666"
           style={styles.searchInput}
           autoCapitalize="none"
@@ -455,22 +467,19 @@ export default function Map() {
 
       <View style={styles.floatingActions}>
         <Pressable style={styles.actionButton} onPress={recenterCampus}>
-          <Text style={styles.actionText}>Campus</Text>
+          <Text style={styles.actionText}>{t("map.camp")}</Text>
         </Pressable>
 
         <Pressable style={styles.actionButton} onPress={goToMyLocation}>
-          <Text style={styles.actionText}>My GPS</Text>
+          <Text style={styles.actionText}>{t("map.gps")}</Text>
         </Pressable>
       </View>
 
       <View style={styles.bottomCard}>
         {loadingLocation ? (
-          <Text style={styles.cardMuted}>Getting your current location...</Text>
+          <Text style={styles.cardMuted}>{t("map.gloc")}</Text>
         ) : !userLocation ? (
-          <Text style={styles.cardMuted}>
-            Location permission is off. You can still search buildings, but
-            routing needs GPS.
-          </Text>
+          <Text style={styles.cardMuted}>{t("map.alert")}</Text>
         ) : selected ? (
           <>
             <Text style={styles.cardTitle}>{selected.label}</Text>
@@ -497,10 +506,7 @@ export default function Map() {
             )}
           </>
         ) : (
-          <Text style={styles.cardMuted}>
-            Search a building, classroom, or class section to guide the student
-            there.
-          </Text>
+          <Text style={styles.cardMuted}>{t("map.guide")}</Text>
         )}
       </View>
     </SafeAreaView>

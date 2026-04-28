@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+import { languageOptions } from "@/src/constants/language";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AnimatedInput from "@src/components/AnimatedInput";
@@ -10,19 +12,23 @@ import { supabase } from "@src/services/database";
 import * as ImagePicker from "expo-image-picker";
 import { Link, router } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
-    Alert,
-    Image,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  Alert,
+  Image,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Page = () => {
+  const insets = useSafeAreaInsets();
+
   const [isContinue, setIsContinue] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -33,8 +39,12 @@ const Page = () => {
     [],
   );
   const [graduationDate, setGraduationDate] = useState<Date | undefined>();
+  const [language, setLanguage] = useState(i18n.language);
   const [isDegFocus, setIsDegFocus] = useState(false);
   const [isMajFocus, setIsMajFocus] = useState(false);
+  const [isLngFocus, setIsLngFocus] = useState(false);
+
+  const { t } = useTranslation();
 
   const continueCustomization = () => {
     setIsContinue(true);
@@ -44,9 +54,7 @@ const Page = () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== "granted") {
-      Alert.alert("Permission Denied", "Could not update the profile image", [
-        { text: "OK" },
-      ]);
+      Alert.alert(t("err.permit"), t("err.imgErr"), [{ text: t("normal.ok") }]);
       return;
     }
 
@@ -60,8 +68,8 @@ const Page = () => {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     } else {
-      Alert.alert("Selection Canceled", "Did not select any image", [
-        { text: "OK" },
+      Alert.alert(t("err.noSelect"), t("err.noImg"), [
+        { text: t("normal.ok") },
       ]);
     }
   };
@@ -90,7 +98,7 @@ const Page = () => {
 
       return data.publicUrl;
     } catch (err: any) {
-      Alert.alert("", err.message, [{ text: "OK" }]);
+      Alert.alert("", t("normal.err-msg"), [{ text: t("normal.ok") }]);
       return null;
     }
   };
@@ -114,16 +122,16 @@ const Page = () => {
         degree: degree,
         major: major,
         grad_date: graduationDate?.toISOString(),
-        language: "English",
+        language: language,
       })
       .eq("usr_id", user.id)
       .select();
 
     if (error) {
       router.replace("/(auth)");
-      Alert.alert("", error.message, [{ text: "OK" }]);
+      Alert.alert("", t("normal.err-msg"), [{ text: t("normal.ok") }]);
     } else if (data.length === 0)
-      Alert.alert("", "Failed to update the data", [{ text: "OK" }]);
+      Alert.alert("", t("err.failUpt"), [{ text: t("normal.ok") }]);
     else router.replace("/(tabs)/(home)");
   };
 
@@ -145,9 +153,13 @@ const Page = () => {
             textAlign: "center",
           }}
         >
-          Would you like to complete customizing your profile?
+          {t("set-up.question")}
         </Text>
-        <Button text="Continue" outline onPress={continueCustomization} />
+        <Button
+          text={t("set-up.btn1")}
+          outline
+          onPress={continueCustomization}
+        />
         <Link
           href="/(tabs)/(home)"
           style={{ display: "flex", justifyContent: "center" }}
@@ -160,7 +172,7 @@ const Page = () => {
               fontSize: 16,
             }}
           >
-            Maybe Later
+            {t("set-up.link1")}
           </ThemedText>
         </Link>
       </View>
@@ -175,7 +187,6 @@ const Page = () => {
           justifyContent: "flex-start",
           alignItems: "center",
           marginTop: 10,
-          height: `100%`,
         }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -189,18 +200,18 @@ const Page = () => {
             marginBottom: 25,
           }}
         >
-          Customize the profile
+          {t("set-up.title")}
         </Text>
 
         <AnimatedInput
           value={firstName}
-          placeholder="First Name"
+          placeholder={t("set-up.f_name")}
           onChangeText={(firstName) => setFirstName(firstName)}
         />
 
         <AnimatedInput
           value={lastName}
-          placeholder="Last Name"
+          placeholder={t("set-up.l_name")}
           onChangeText={(lastName) => setLastName(lastName)}
         />
 
@@ -230,6 +241,7 @@ const Page = () => {
                   name="image"
                   size={24}
                   color={pressed ? COLORS.primary : COLORS.secondary}
+                  style={{ alignSelf: "center" }}
                 />
                 <Text
                   style={{
@@ -237,7 +249,7 @@ const Page = () => {
                     fontSize: 12,
                   }}
                 >
-                  Select an image
+                  {t("set-up.img")}
                 </Text>
               </View>
             ) : (
@@ -275,7 +287,7 @@ const Page = () => {
           data={degreeOptions}
           labelField="label"
           valueField="value"
-          placeholder="Select a degree"
+          placeholder={t("set-up.deg")}
           value={degree}
           onFocus={() => setIsDegFocus(true)}
           onBlur={() => setIsDegFocus(false)}
@@ -344,7 +356,7 @@ const Page = () => {
           data={allMajor}
           labelField="label"
           valueField="value"
-          placeholder="Select a major"
+          placeholder={t("set-up.maj")}
           value={major}
           onFocus={() => setIsMajFocus(true)}
           onBlur={() => setIsMajFocus(false)}
@@ -397,7 +409,7 @@ const Page = () => {
             marginBottom: 10,
           }}
         >
-          Expected Graduation Date
+          {t("set-up.grad")}
         </Text>
         <DateTimePicker
           display={Platform.OS === "ios" ? "spinner" : "default"}
@@ -414,19 +426,88 @@ const Page = () => {
           value={graduationDate || new Date()}
           mode="date"
           minimumDate={new Date()}
+          locale={i18n.language}
           onChange={(_, date) => setGraduationDate(date)}
         />
 
+        <Dropdown
+          style={[
+            styles.dropdown,
+            isLngFocus && { borderColor: COLORS.primary },
+          ]}
+          placeholderStyle={{ fontSize: 16, color: COLORS.secondary }}
+          selectedTextStyle={{
+            fontSize: 14,
+            fontWeight: "600",
+            color: COLORS.primary,
+          }}
+          containerStyle={{
+            borderRadius: 12,
+            borderWidth: 2,
+            borderColor: COLORS.primary,
+            marginTop: 8,
+            overflow: "hidden",
+            backgroundColor: COLORS.background,
+          }}
+          data={languageOptions}
+          labelField="label"
+          valueField="value"
+          placeholder={t("set-up.lng")}
+          value={language}
+          onFocus={() => setIsLngFocus(true)}
+          onBlur={() => setIsLngFocus(false)}
+          onChange={(language) => {
+            setLanguage(language.value);
+            setIsLngFocus(false);
+          }}
+          renderLeftIcon={() => (
+            <Ionicons
+              style={{ marginRight: 10 }}
+              color={isDegFocus ? COLORS.primary : COLORS.secondary}
+              name="menu-outline"
+              size={20}
+            />
+          )}
+          renderItem={(language) => {
+            return (
+              <View
+                style={{
+                  padding: 17,
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: COLORS.primary,
+                  backgroundColor: COLORS.background,
+                }}
+              >
+                <Text
+                  style={{
+                    flex: 1,
+                    fontSize: 16,
+                    color: COLORS.primary,
+                    fontWeight: "500",
+                  }}
+                >
+                  {language.label}
+                </Text>
+              </View>
+            );
+          }}
+        />
+
         <Button
-          text="Save"
-          style={
+          text={t("set-up.btn2")}
+          style={[
             (!firstName ||
               !lastName ||
               !image ||
               !degree ||
               !major ||
-              !graduationDate) && { opacity: 0.5 }
-          }
+              !graduationDate ||
+              !language) && { opacity: 0.5 },
+            { marginTop: 30 },
+          ]}
           outline
           disabled={
             !firstName ||
@@ -434,7 +515,8 @@ const Page = () => {
             !image ||
             !degree ||
             !major ||
-            !graduationDate
+            !graduationDate ||
+            !language
           }
           onPress={updateData}
         />

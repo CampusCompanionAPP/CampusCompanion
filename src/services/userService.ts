@@ -1,4 +1,3 @@
-import { Alert } from "react-native";
 import { supabase } from "./database";
 
 export interface UserData {
@@ -33,7 +32,7 @@ export const fetchUserData = async () => {
       return data;
     }
   } catch (err: any) {
-    Alert.alert("", err.message, [{ text: "OK" }]);
+    console.error(err.message);
     return null;
   }
 };
@@ -55,7 +54,22 @@ export const fetchSchedule = async () => {
       return data;
     }
   } catch (err: any) {
-    Alert.alert("", err.message, [{ text: "OK" }]);
+    console.error(err.message);
+    return null;
+  }
+};
+
+export const fetchUser = async () => {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) return user;
+
+    throw new Error();
+  } catch (err: any) {
+    console.error(err.message);
     return null;
   }
 };

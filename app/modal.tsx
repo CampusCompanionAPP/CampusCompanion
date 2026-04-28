@@ -1,12 +1,18 @@
+import i18n from "@/i18n";
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import AnimatedInput from "@src/components/AnimatedInput";
 import Button from "@src/components/Button";
 import { COLORS } from "@src/constants/color";
-import { class_days, course_prefix, KSU_buildings } from "@src/constants/course";
+import {
+  class_days,
+  course_prefix,
+  KSU_buildings,
+} from "@src/constants/course";
 import { supabase } from "@src/services/database";
-import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { router } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Keyboard,
@@ -19,6 +25,8 @@ import {
 import { Dropdown } from "react-native-element-dropdown";
 
 const Modal = () => {
+  const { t } = useTranslation();
+
   const [isPrefixFocus, setIsPrefixFocus] = useState(false);
   const [isDayFocus, setIsDayFocus] = useState(false);
   const [isBPrefixFocus, setIsBPrefixFocus] = useState(false);
@@ -29,17 +37,6 @@ const Modal = () => {
   const [classTime, setClassTime] = useState<Date | undefined>();
   const [buildPrefix, setBuildPrefix] = useState("");
   const [roomNumber, setroomNumber] = useState("");
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     return () => {
-  //       setPrefix("");
-  //       setCourseNum("");
-  //       setClassDay("");
-  //       setClassTime(undefined);
-  //     };
-  //   }, []),
-  // );
 
   const addCourse = async () => {
     try {
@@ -55,7 +52,7 @@ const Modal = () => {
           {
             usr_id: user.id,
             course: `${prefix} ${courseNum}`,
-            day_time: `${classDay}\n${classTime?.toLocaleTimeString([], {
+            day_time: `${classDay} ${classTime?.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
 
@@ -70,8 +67,9 @@ const Modal = () => {
         }
       }
     } catch (err: any) {
-      const errorMessage = err.message || "something went wrong";
-      Alert.alert("", errorMessage, [{ text: "OK" }]);
+      Alert.alert("", t("normal.err-msg"), [{ text: t("normal.ok") }]);
+    } finally {
+      router.back();
     }
   };
 
@@ -95,7 +93,9 @@ const Modal = () => {
           textAlign: "center",
         }}
       >
-        {prefix && courseNum.length === 4 ? `${prefix} ${courseNum}` : "Course"}
+        {prefix && courseNum.length === 4
+          ? `${prefix} ${courseNum}`
+          : t("home.c")}
       </Text>
       <Dropdown
         style={[
@@ -124,7 +124,7 @@ const Modal = () => {
         data={course_prefix}
         labelField="prefix"
         valueField="prefix"
-        placeholder="Select a course prefix"
+        placeholder={t("home.pre")}
         value={prefix}
         onFocus={() => setIsPrefixFocus(true)}
         onBlur={() => setIsPrefixFocus(false)}
@@ -170,7 +170,7 @@ const Modal = () => {
 
       <AnimatedInput
         value={courseNum}
-        placeholder="Course Number"
+        placeholder={t("home.num")}
         style={{ width: `100%`, height: `100%`, textAlign: "center" }}
         keyboardType="number-pad"
         maxLength={4}
@@ -198,14 +198,14 @@ const Modal = () => {
         }}
       >
         {classDay && classTime
-          ? `${class_days.find((day) => day.prefix === classDay)?.label} \n starting at ${classTime.toLocaleTimeString(
-              [],
+          ? `${t(`home.${class_days.find((day) => day.prefix === classDay)?.label}`)} \n ${t("home.start")} ${classTime.toLocaleTimeString(
+              i18n.language,
               {
                 hour: "2-digit",
                 minute: "2-digit",
               },
             )}`
-          : "Class Day & Time"}
+          : t("home.daytime")}
       </Text>
 
       <Dropdown
@@ -229,10 +229,13 @@ const Modal = () => {
           overflow: "hidden",
           backgroundColor: COLORS.background,
         }}
-        data={class_days}
-        labelField="prefix"
+        data={class_days.map((day) => ({
+          ...day,
+          translatedPrefix: t("home." + day.prefix),
+        }))}
+        labelField="translatedPrefix"
         valueField="prefix"
-        placeholder="Select a course day"
+        placeholder={t(`home.day`)}
         value={classDay}
         onFocus={() => setIsDayFocus(true)}
         onBlur={() => setIsDayFocus(false)}
@@ -269,7 +272,7 @@ const Modal = () => {
                   fontWeight: "500",
                 }}
               >
-                {day.label}
+                {t(`home.${day.label}`)}
               </Text>
             </View>
           );
@@ -289,6 +292,7 @@ const Modal = () => {
         }}
         value={classTime || new Date()}
         mode="time"
+        locale={i18n.language}
         onChange={(_, time) => setClassTime(time)}
       />
 
@@ -313,8 +317,8 @@ const Modal = () => {
         }}
       >
         {buildPrefix && roomNumber.length === 3
-          ? `located at\n ${buildPrefix} ${roomNumber}`
-          : "Location"}
+          ? `${t("home.la")}\n ${buildPrefix} ${roomNumber}`
+          : t("home.loc")}
       </Text>
 
       <Dropdown
@@ -344,7 +348,7 @@ const Modal = () => {
         data={KSU_buildings}
         labelField="code"
         valueField="code"
-        placeholder="Select a building code"
+        placeholder={t("home.code")}
         value={buildPrefix}
         onFocus={() => setIsBPrefixFocus(true)}
         onBlur={() => setIsBPrefixFocus(false)}
@@ -389,7 +393,7 @@ const Modal = () => {
       />
       <AnimatedInput
         value={roomNumber}
-        placeholder="Room Number"
+        placeholder={t("home.rnum")}
         style={{ width: `100%`, height: `100%`, textAlign: "center" }}
         keyboardType="number-pad"
         maxLength={3}
@@ -400,10 +404,10 @@ const Modal = () => {
       />
 
       <Button
-        text="Add a schedule"
+        text={t("home.add")}
         outline
         style={[
-          { marginTop: 10 },
+          { marginTop: 30 },
           (!prefix ||
             courseNum.length !== 4 ||
             !classDay ||
@@ -415,7 +419,6 @@ const Modal = () => {
         ]}
         onPress={async () => {
           addCourse();
-          router.back();
         }}
         disabled={
           !prefix ||

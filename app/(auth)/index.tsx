@@ -1,9 +1,25 @@
+import { supabase } from "@/src/services/database";
 import Button from "@src/components/Button";
 import { router } from "expo-router";
 import React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function AuthLanding() {
+  const { t } = useTranslation();
+
+  const onSignInAnony = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInAnonymously();
+
+      if (error) throw new Error();
+
+      router.replace("/(tabs)/(home)");
+    } catch (err) {
+      Alert.alert(t("normal.err-msg"), "", [{ text: t("normal.ok") }]);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -13,7 +29,8 @@ export default function AuthLanding() {
           resizeMode="contain"
         />
         <Text style={styles.title}>
-          Start your journey with{"\n"}your portable guide.
+          {/* Start your journey with{"\n"}your portable guide. */}
+          {t("auth.title")}
         </Text>
 
         {/* <Pressable
@@ -27,7 +44,7 @@ export default function AuthLanding() {
         </Pressable> */}
 
         <Button
-          text="Create account"
+          text={t("auth.btn1")}
           style={{
             backgroundColor: "#FFF",
             borderColor: "#FFF",
@@ -36,7 +53,7 @@ export default function AuthLanding() {
           onPress={() => router.push("/(auth)/sign-up")}
         />
 
-        <Text style={styles.helperText}>Already have an account?</Text>
+        <Text style={styles.helperText}>{t("auth.helper")}</Text>
 
         {/* <Link href="/(auth)/sign-in" asChild> */}
         {/* <Pressable
@@ -54,17 +71,20 @@ export default function AuthLanding() {
         {/* </Link> */}
 
         <Button
-          text="Sign in"
+          text={t("auth.btn2")}
           outline
           style={{ marginBottom: 7 }}
           onPress={() => router.push("/(auth)/sign-in")}
         />
 
         <Pressable
-          onPress={() => router.replace("/(tabs)/(home)")}
-          style={styles.guestWrap}
+          onPress={() => onSignInAnony()}
+          style={({ pressed }) => [
+            styles.guestWrap,
+            pressed && { opacity: 0.5 },
+          ]}
         >
-          <Text style={styles.guestText}>Sign in as guest</Text>
+          <Text style={styles.guestText}>{t("auth.guest")}</Text>
         </Pressable>
       </View>
     </View>
