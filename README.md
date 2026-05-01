@@ -1,8 +1,32 @@
-# Welcome to your Expo app 👋
+<div align="center">
+   <h1 align="center">Campus Companion</h1>
+   <img alt="Static Badge" src="https://img.shields.io/badge/react-19.1.0-%2361DBFB?style=for-the-badge">
+   <img alt="Static Badge" src="https://img.shields.io/badge/react%20native-0.81.5-%2361DBFB?style=for-the-badge">
+   <img alt="Static Badge" src="https://img.shields.io/badge/expo%20router-6.0.23-%2300000040?style=for-the-badge">
+   <img alt="Static Badge" src="https://img.shields.io/badge/npm-10.7.0-%23CC3534?style=for-the-badge">
+   <img alt="Static Badge" src="https://img.shields.io/badge/typescript-5.9.3-%233178c6?style=for-the-badge">
+</div>
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+<br>
+<br>
+<br>
 
-## Get started
+# Overview
+
+This application is developed to guide new KSU (Kennesaw State University) students and visiors from the both Marietta and Kennesaw campuses.
+The appliciation is focused on providing convenient routing to specific KSU building and schedule management.
+
+# Features
+
+The application currently provides the following features:
+
+- User Authentication (with OTP) & Guest Access
+- Course Schedule Management
+- Interactive Map Routing
+- Event Displayer
+- Customizable Settings
+
+# Get Started
 
 1. Clone the repository
    ```bash
