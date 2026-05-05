@@ -128,11 +128,16 @@ const Page = () => {
       .select();
 
     if (error) {
-      router.replace("/(auth)");
-      Alert.alert("", t("normal.err-msg"), [{ text: t("normal.ok") }]);
-    } else if (data.length === 0)
-      Alert.alert("", t("err.failUpt"), [{ text: t("normal.ok") }]);
-    else router.replace("/(tabs)/(home)");
+      Alert.alert("", t("normal.err-msg"), [
+        { text: t("normal.ok"), onPress: () => router.replace("/(auth)") },
+      ]);
+    } else if (data.length === 0) {
+      Alert.alert("", t("err.failUpt"), [
+        { text: t("normal.ok"), onPress: () => router.replace("/(auth)") },
+      ]);
+    } else {
+      router.replace("/(tabs)/(home)");
+    }
   };
 
   return (

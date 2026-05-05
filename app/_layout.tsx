@@ -32,14 +32,17 @@ export default function RootLayout() {
   const router = useRouter();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "INITIAL_SESSION" && session) {
         if (!session.user.is_anonymous) syncUserLanguage();
         router.replace("/(tabs)/(home)");
       } else if (event === "SIGNED_OUT") {
         router.replace("/(auth)/sign-in");
       }
     });
+    return () => subscription.unsubscribe();
   }, []);
 
   return (

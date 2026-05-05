@@ -7,7 +7,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: "campus-companion",
   scheme: "campuscompanion",
   plugins: [
-    "expo-localization",
     [
       "expo-location",
       {

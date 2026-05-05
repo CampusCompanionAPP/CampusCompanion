@@ -57,6 +57,9 @@ export default function Home() {
       setUserData(data);
       const schedule = await fetchSchedule();
       setScheduleData(schedule);
+    } else {
+      setUserData(null);
+      setScheduleData([]);
     }
   }, []);
 
@@ -107,7 +110,7 @@ export default function Home() {
     });
   };
 
-  if (!userData || !scheduleData) return <Loading />;
+  if (userData === undefined || scheduleData === undefined) return <Loading />;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>

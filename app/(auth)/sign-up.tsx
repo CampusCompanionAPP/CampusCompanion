@@ -6,6 +6,7 @@ import { ThemedView } from "@src/components/themed-view";
 import Timer from "@src/components/Timer";
 import { COLORS } from "@src/constants/color";
 import { supabase } from "@src/services/database";
+import * as Linking from "expo-linking";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -29,6 +30,7 @@ export default function Page() {
 
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { t } = useTranslation();
 
@@ -51,14 +53,14 @@ export default function Page() {
   // }, []);
 
   const onSignUpPress = async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password: password,
         options: {
-          data: {
-            name: name,
-          },
+          data: { name: name },
+          emailRedirectTo: Linking.createURL("/sign-in"),
         },
       });
 
@@ -83,12 +85,14 @@ export default function Page() {
         backgroundColor: COLORS.danger,
         textColor: "#FFFFFF",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const onVerifyPress = async (code: string) => {
     if (!email || !code) return;
-
+    setLoading(true);
     try {
       const { data, error } = await supabase.auth.verifyOtp({
         email: email.trim(),
@@ -104,7 +108,6 @@ export default function Page() {
             usr_id: data.user.id,
             username: name.trim(),
             email: email.trim(),
-            password: password.trim(),
             first_name: "",
             last_name: "",
             img_url: "",
@@ -120,23 +123,12 @@ export default function Page() {
         }
       }
 
-      router.replace("/(auth)");
-
-      // if (data.session) {
-      //   router.replace("/(auth)/set-up");
-      // }
+      router.replace("/(auth)/set-up");
     } catch (err: any) {
       const errorMessage = err.message || t("normal.err-msg");
       Alert.alert("", errorMessage, [{ text: t("normal.ok") }]);
-
-      // Toast.show(errorMessage, {
-      //   duration: Toast.durations.LONG,
-      //   position: Toast.positions.CENTER,
-      //   shadow: true,
-      //   hideOnPress: true,
-      //   backgroundColor: COLORS.danger,
-      //   textColor: "#FFFFFF",
-      // });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -288,7 +280,8 @@ export default function Page() {
           styles.button,
           (!name ||
             !email ||
-            !getPasswordValidations(password).every((item) => item.valid)) &&
+            !getPasswordValidations(password).every((item) => item.valid) ||
+            loading) &&
             styles.buttonDisabled,
           pressed && styles.buttonPressed,
         ]}
@@ -296,7 +289,8 @@ export default function Page() {
         disabled={
           !name ||
           !email ||
-          !getPasswordValidations(password).every((item) => item.valid)
+          !getPasswordValidations(password).every((item) => item.valid) ||
+          loading
         }
       >
         <ThemedText style={styles.buttonText}>{t("sign-up.btn1")}</ThemedText>

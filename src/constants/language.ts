@@ -1,7 +1,7 @@
 export const languageOptions = [
   { label: "English", value: "English" },
   { label: "español", value: "español" },
-  { label: "italiano", vlaue: "italiano" },
+  { label: "italiano", value: "italiano" },
   { label: "français", value: "français" },
   { label: "한국어", value: "한국어" },
 ];

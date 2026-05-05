@@ -3,6 +3,7 @@ import Button from "@src/components/Button";
 import { ThemedText } from "@src/components/themed-text";
 import { COLORS } from "@src/constants/color";
 import { supabase } from "@src/services/database";
+import { syncUserLanguage } from "@/i18n";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,24 +15,28 @@ export default function Page() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [code, setCode] = useState("");
-  const [showEmailCode, setShowEmailCode] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { t } = useTranslation();
 
   const onSignInPress = async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
+        email: email.trim(),
         password: password,
       });
 
       if (error) throw error;
 
-      if (data.session) router.replace("/(tabs)/(home)");
+      if (data.session) {
+        syncUserLanguage();
+        router.replace("/(tabs)/(home)");
+      }
     } catch (err: any) {
-      const errorMessage = err.message || t("normal.err-msg");
       Alert.alert("", t("sign-in.errMsg"), [{ text: t("normal.ok") }]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,8 +104,8 @@ export default function Page() {
       <Button
         text={t("sign-in.btn1")}
         outline
-        disabled={!email || !password}
-        style={[(!email || !password) && { opacity: 0.5 }]}
+        disabled={!email || !password || loading}
+        style={[(!email || !password || loading) && { opacity: 0.5 }]}
         onPress={onSignInPress}
       />
     </ScrollView>

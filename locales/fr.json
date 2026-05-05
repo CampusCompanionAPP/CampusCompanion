@@ -113,7 +113,14 @@
     "gps": "Mon GPS",
     "gloc": "Localisation en cours...",
     "alert": "La localisation est désactivée. Recherche possible, mais l'itinéraire nécessite le GPS.",
-    "guide": "Recherchez un lieu pour y guider l'étudiant."
+    "guide": "Recherchez un lieu pour y guider l'étudiant.",
+    "calc": "Calcul de l'itinéraire à pied...",
+    "tap": "Appuyez sur un résultat pour obtenir des indications.",
+    "pickStart": "Définir le départ",
+    "picking": "Appuyez sur un bâtiment pour le définir comme point de départ",
+    "openMaps": "Ouvrir dans Maps",
+    "clear": "Effacer",
+    "from": "Depuis :"
   },
   "event": {
     "Today": "Aujourd'hui",

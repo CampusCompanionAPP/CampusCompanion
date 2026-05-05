@@ -113,7 +113,14 @@
     "gps": "Il mio GPS",
     "gloc": "Rilevamento posizione...",
     "alert": "GPS disattivato. Puoi cercare edifici, ma il navigatore richiede il GPS.",
-    "guide": "Cerca un edificio o aula per guidare lo studente."
+    "guide": "Cerca un edificio o aula per guidare lo studente.",
+    "calc": "Calcolo del percorso a piedi...",
+    "tap": "Tocca un risultato per ottenere indicazioni sul percorso.",
+    "pickStart": "Imposta partenza",
+    "picking": "Tocca un edificio per impostarlo come punto di partenza",
+    "openMaps": "Apri in Maps",
+    "clear": "Cancella",
+    "from": "Da:"
   },
   "event": {
     "Today": "Oggi",

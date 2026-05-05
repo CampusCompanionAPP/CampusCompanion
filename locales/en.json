@@ -123,7 +123,14 @@
     "gps": "My GPS",
     "gloc": "Getting your current location...",
     "alert": "Location permission is off. You can still search buildings, but routing needs GPS.",
-    "guide": "Search a building, classroom, or class section to guide the student there."
+    "guide": "Search a building, classroom, or class section to guide the student there.",
+    "calc": "Calculating walking route...",
+    "tap": "Tap a result to get route guidance.",
+    "pickStart": "Set start",
+    "picking": "Tap a building to set as start point",
+    "openMaps": "Open in Maps",
+    "clear": "Clear",
+    "from": "From:"
   },
   "event": {
     "Today": "Today",

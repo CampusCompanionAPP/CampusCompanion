@@ -113,7 +113,14 @@
     "gps": "Mi GPS",
     "gloc": "Obteniendo ubicación...",
     "alert": "El GPS está desactivado. Puedes buscar edificios, pero necesitas GPS para rutas.",
-    "guide": "Busca un edificio o aula para guiar al estudiante."
+    "guide": "Busca un edificio o aula para guiar al estudiante.",
+    "calc": "Calculando ruta a pie...",
+    "tap": "Toca un resultado para obtener la guía de ruta.",
+    "pickStart": "Establecer inicio",
+    "picking": "Toca un edificio para establecerlo como punto de inicio",
+    "openMaps": "Abrir en Mapas",
+    "clear": "Borrar",
+    "from": "Desde:"
   },
   "event": {
     "Today": "Hoy",
