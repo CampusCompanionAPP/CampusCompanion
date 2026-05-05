@@ -13,8 +13,8 @@
 
 # Overview
 
-This application is developed to guide new KSU (Kennesaw State University) students and visiors from the both Marietta and Kennesaw campuses.
-The appliciation is focused on providing convenient routing to specific KSU building and schedule management.
+This application is developed to guide new KSU (Kennesaw State University) students and visitors from both the Marietta and Kennesaw campuses.
+The application is focused on providing convenient routing to specific KSU buildings and schedule management.
 
 # Features
 
